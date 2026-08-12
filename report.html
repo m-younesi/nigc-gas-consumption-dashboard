@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>گزارش تحلیلی مصرف گاز خانگی ایران — سال ۱۴۰۴</title>
 <link rel="icon" href="assets/img/nigc-logo.svg">
-<link rel="stylesheet" href="assets/css/app.css?v=3">
+<link rel="stylesheet" href="assets/css/app.css?v=4">
 <style>
   /* ================= صفحه‌بندی A4 برای خروجی PDF ================= */
   @page { size: A4 portrait; margin: 0; }
@@ -153,16 +153,16 @@
         <small>مدیریت گازرسانی — امور تعرفه‌ها و قراردادها</small>
       </div>
     </div>
-    <h1>آناتومی یک زمستان<br><em>چه کسی گاز ایران را می‌سوزاند؟</em></h1>
-    <p>
+    <h1><span data-c="outputs.report.title">آناتومی یک زمستان</span><br><em data-c="outputs.report.title_emphasis">چه کسی گاز ایران را می‌سوزاند؟</em></h1>
+    <p data-c="outputs.report.lead">
       تحلیل مصرف گاز بخش خانگی کشور در سال ۱۴۰۴، به تفکیک پلهٔ تعرفه و استان —
       همراه با سنجش نابرابری مصرف و تفکیک اثر اقلیم از اثر رفتار.
     </p>
     <div class="cover__meta">
-      <div><b>دامنهٔ گزارش</b>۳۱ استان · ۱۲ پلهٔ دورهٔ سرد · ۴ پلهٔ دورهٔ گرم</div>
-      <div><b>تاریخ تهیهٔ گزارش مبدأ</b>۱۴۰۵/۰۵/۱۸</div>
-      <div><b>منبع داده</b>چهار جدول رسمی امور تعرفه‌ها و قراردادها</div>
-      <div><b>نسخهٔ تعاملی</b>در دسترس روی GitHub Pages</div>
+      <div><b data-c="outputs.report.label_scope">دامنهٔ گزارش</b><span data-c="outputs.shared.scope">۳۱ استان · ۱۲ پلهٔ دورهٔ سرد · ۴ پلهٔ دورهٔ گرم</span></div>
+      <div><b data-c="outputs.report.label_date">تاریخ تهیهٔ گزارش مبدأ</b><span data-c="outputs.shared.report_date">۱۴۰۵/۰۵/۱۸</span></div>
+      <div><b data-c="outputs.report.label_source">منبع داده</b><span data-c="outputs.shared.source_note">چهار جدول رسمی امور تعرفه‌ها و قراردادها</span></div>
+      <div><b data-c="outputs.report.label_interactive">نسخهٔ تعاملی</b><span data-c="outputs.report.value_interactive">در دسترس روی GitHub Pages</span></div>
     </div>
   </div>
 </section>
@@ -173,7 +173,7 @@
     <span>تحلیل مصرف گاز خانگی ۱۴۰۴</span><span class="sep">خلاصهٔ مدیریتی</span></div>
 
   <div class="rkicker">فصل ۰۱</div>
-  <h2 class="rt">خلاصهٔ مدیریتی</h2>
+  <h2 class="rt" data-c="outputs.report.h_summary">خلاصهٔ مدیریتی</h2>
   <p class="rlead">
     تعرفهٔ گاز خانگی در دورهٔ سرد دوازده پله دارد. داده نشان می‌دهد مشترکین روی این
     نردبان به‌شدت نامتقارن پخش شده‌اند: ته نردبان شلوغ است و نوکش گران. آنچه در پی
@@ -202,7 +202,7 @@
     <span>تحلیل مصرف گاز خانگی ۱۴۰۴</span><span class="sep">روش‌شناسی</span></div>
 
   <div class="rkicker">فصل ۰۲</div>
-  <h2 class="rt">داده و روش</h2>
+  <h2 class="rt" data-c="outputs.report.h_method">داده و روش</h2>
 
   <h3 class="rs">منبع و اعتبارسنجی</h3>
   <p class="rp">
@@ -258,7 +258,7 @@
     <span>تحلیل مصرف گاز خانگی ۱۴۰۴</span><span class="sep">نردبان پله‌ها</span></div>
 
   <div class="rkicker">فصل ۰۳</div>
-  <h2 class="rt">نردبان دوازده‌پله‌ای، پله به پله</h2>
+  <h2 class="rt" data-c="outputs.report.h_ladder">نردبان دوازده‌پله‌ای، پله به پله</h2>
   <p class="rlead">
     نمودار پروانه‌ای دو سهم را روبه‌روی هم می‌گذارد: چند درصد مشترکین در هر پله‌اند،
     و آن پله چند درصد گاز کشور را می‌سوزاند. هرچه از پله‌های پایین بالا می‌رویم،
@@ -288,7 +288,7 @@
     <span>تحلیل مصرف گاز خانگی ۱۴۰۴</span><span class="sep">نابرابری مصرف</span></div>
 
   <div class="rkicker">فصل ۰۴</div>
-  <h2 class="rt">فاصله تا برابری</h2>
+  <h2 class="rt" data-c="outputs.report.h_inequality">فاصله تا برابری</h2>
   <p class="rlead">
     منحنی لورنز ابزار استاندارد سنجش نابرابری است. اگر همهٔ مشترکین یک‌اندازه گاز
     می‌سوزاندند، منحنی روی خط‌چین قطری می‌افتاد. هرچه منحنی بیشتر فرو برود، مصرف
@@ -324,7 +324,7 @@
     <span>تحلیل مصرف گاز خانگی ۱۴۰۴</span><span class="sep">جغرافیای مصرف</span></div>
 
   <div class="rkicker">فصل ۰۵</div>
-  <h2 class="rt">جغرافیای مصرف مازاد بر الگو</h2>
+  <h2 class="rt" data-c="outputs.report.h_map">جغرافیای مصرف مازاد بر الگو</h2>
   <p class="rlead">
     نقشه، سهم گازی را نشان می‌دهد که در هر استان بالاتر از سقف الگو سوخته است.
     هرچه روشن‌تر، این سهم بیشتر.
@@ -353,7 +353,7 @@
     <span>تحلیل مصرف گاز خانگی ۱۴۰۴</span><span class="sep">اقلیم و رفتار</span></div>
 
   <div class="rkicker">فصل ۰۶</div>
-  <h2 class="rt">سرما چقدر از ماجرا را توضیح می‌دهد؟</h2>
+  <h2 class="rt" data-c="outputs.report.h_climate">سرما چقدر از ماجرا را توضیح می‌دهد؟</h2>
   <p class="rlead">
     انتظار طبیعی این است که استان سردتر بیشتر از الگو مصرف کند، و داده این را تأیید
     می‌کند. اما برازش خطی تنها بخشی از تفاوت‌ها را می‌پوشاند؛ آنچه باقی می‌ماند سهم
@@ -394,7 +394,7 @@
     <span>تحلیل مصرف گاز خانگی ۱۴۰۴</span><span class="sep">دو فصل</span></div>
 
   <div class="rkicker">فصل ۰۷</div>
-  <h2 class="rt">دو فصل، دو ساختار تعرفه</h2>
+  <h2 class="rt" data-c="outputs.report.h_season">دو فصل، دو ساختار تعرفه</h2>
   <p class="rlead">
     چون مرز پله‌ها در دو نیم‌سال یکی نیست، سهم خام گروه‌ها را نمی‌توان بین دو دوره
     مقایسه کرد. آنچه قابل مقایسه است، ضریب شدت است: نسبتی درون‌دوره‌ای که می‌گوید
@@ -419,7 +419,7 @@
     <span>تحلیل مصرف گاز خانگی ۱۴۰۴</span><span class="sep">پیوست داده — شاخص‌ها</span></div>
 
   <div class="rkicker">پیوست ۰۱</div>
-  <h2 class="rt">شاخص‌های محاسبه‌شده به تفکیک استان</h2>
+  <h2 class="rt" data-c="outputs.report.h_province_table">شاخص‌های محاسبه‌شده به تفکیک استان</h2>
   <p class="rlead">همهٔ ستون‌ها درصدند مگر جینی، پلهٔ میانه و دما.</p>
   <table class="rt2" id="rMainTable"></table>
 
@@ -433,7 +433,7 @@
     <span>تحلیل مصرف گاز خانگی ۱۴۰۴</span><span class="sep">پیوست داده — مصرف</span></div>
 
   <div class="rkicker">پیوست ۰۲</div>
-  <h2 class="rt">درصد مصرف به تفکیک پله — دورهٔ سرد</h2>
+  <h2 class="rt" data-c="outputs.report.h_cons_table">درصد مصرف به تفکیک پله — دورهٔ سرد</h2>
   <p class="rlead">داده خام جدول مبدأ، پس از نرمال‌سازی به مجموع ۱۰۰.</p>
   <table class="rt2" id="rConsTable"></table>
 
@@ -447,7 +447,7 @@
     <span>تحلیل مصرف گاز خانگی ۱۴۰۴</span><span class="sep">پیوست داده — مشترکین</span></div>
 
   <div class="rkicker">پیوست ۰۳</div>
-  <h2 class="rt">درصد تعداد مشترکین به تفکیک پله — دورهٔ سرد</h2>
+  <h2 class="rt" data-c="outputs.report.h_subs_table">درصد تعداد مشترکین به تفکیک پله — دورهٔ سرد</h2>
   <p class="rlead">داده خام جدول مبدأ، پس از نرمال‌سازی به مجموع ۱۰۰.</p>
   <table class="rt2" id="rCountTable"></table>
 
@@ -458,10 +458,11 @@
     <span class="pg">۱۱</span></div>
 </section>
 
+<script src="assets/js/content.js?v=4"></script>
 <script src="assets/vendor/echarts.min.js"></script>
-<script src="assets/js/data.js?v=3"></script>
-<script src="assets/js/util.js?v=3"></script>
-<script src="assets/js/charts.js?v=3"></script>
-<script src="assets/js/report.js?v=3"></script>
+<script src="assets/js/data.js?v=4"></script>
+<script src="assets/js/util.js?v=4"></script>
+<script src="assets/js/charts.js?v=4"></script>
+<script src="assets/js/report.js?v=4"></script>
 </body>
 </html>

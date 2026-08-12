@@ -316,6 +316,7 @@
       { id: 'sections', label: 'متن بخش‌ها', build: buildSectionsPanel },
       { id: 'theme', label: 'رنگ‌ها (روشن/تیره)', build: buildThemePanel },
       { id: 'downloads', label: 'دانلودها', build: buildDownloadsPanel },
+      { id: 'outputs', label: 'محتوای فایل‌های خروجی', build: buildOutputsPanel },
       { id: 'columns', label: 'ستون‌های جدول', build: buildColumnsPanel },
       { id: 'rawdata', label: 'داده‌های خام استان‌ها', build: buildRawDataPanel }
     ];
@@ -590,6 +591,170 @@
     });
     card.appendChild(addBtn);
     panel.appendChild(card);
+  }
+
+  /* ---------------- محتوای فایل‌های خروجی (PDF / پوستر / آفیس) --------------- */
+
+  var OUTPUT_LABELS = {
+    shared: {
+      _title: 'هویت مشترک — در همهٔ خروجی‌ها می‌آید',
+      org: 'نام سازمان',
+      department: 'واحد سازمانی',
+      period: 'دوره',
+      report_date: 'تاریخ گزارش مبدأ',
+      scope: 'دامنهٔ گزارش',
+      source_note: 'توضیح منبع داده',
+      footer: 'پاورقی'
+    },
+    report: {
+      _title: 'گزارش PDF',
+      title: 'عنوان جلد',
+      title_emphasis: 'عنوان تأکیدشده (خط دوم)',
+      lead: 'متن معرفی جلد',
+      label_scope: 'برچسب «دامنه»',
+      label_date: 'برچسب «تاریخ»',
+      label_source: 'برچسب «منبع»',
+      label_interactive: 'برچسب «نسخهٔ تعاملی»',
+      value_interactive: 'مقدار «نسخهٔ تعاملی»',
+      h_summary: 'عنوان: خلاصهٔ مدیریتی',
+      h_method: 'عنوان: داده و روش',
+      h_ladder: 'عنوان: نردبان پله‌ها',
+      h_inequality: 'عنوان: نابرابری',
+      h_map: 'عنوان: نقشه',
+      h_climate: 'عنوان: اقلیم',
+      h_season: 'عنوان: دو فصل',
+      h_province_table: 'عنوان: جدول استان‌ها',
+      h_cons_table: 'عنوان: جدول مصرف',
+      h_subs_table: 'عنوان: جدول مشترکین'
+    },
+    poster: {
+      _title: 'پوستر',
+      title: 'عنوان',
+      title_emphasis: 'عنوان تأکیدشده',
+      h_ladder: 'عنوان: نردبان پله‌ها',
+      h_inequality: 'عنوان: نابرابری',
+      h_map: 'عنوان: نقشه'
+    }
+  };
+
+  var LONG_OUTPUT_FIELDS = { lead: 1, cover_note: 1, footer: 1 };
+
+  function makeColorField(labelText, path, value) {
+    var wrap = document.createElement('div');
+    wrap.className = 'field';
+    var label = document.createElement('label');
+    label.textContent = labelText;
+    wrap.appendChild(label);
+
+    var row = document.createElement('div');
+    row.className = 'color-field';
+    var textInput = document.createElement('input');
+    textInput.type = 'text';
+    textInput.setAttribute('data-type', 'text');
+    bindField(textInput, path, value);
+    if (isHexColor(value)) {
+      var colorInput = document.createElement('input');
+      colorInput.type = 'color';
+      colorInput.value = value;
+      colorInput.addEventListener('input', function () {
+        textInput.value = colorInput.value;
+      });
+      textInput.addEventListener('input', function () {
+        if (isHexColor(textInput.value)) colorInput.value = textInput.value;
+      });
+      row.appendChild(colorInput);
+    }
+    row.appendChild(textInput);
+    wrap.appendChild(row);
+    return wrap;
+  }
+
+  function buildOutputGroup(panel, groupKey, obj) {
+    var labels = OUTPUT_LABELS[groupKey];
+    var card = document.createElement('div');
+    card.className = 'card';
+    var h3 = document.createElement('h3');
+    h3.textContent = labels._title;
+    card.appendChild(h3);
+
+    var grid = document.createElement('div');
+    grid.className = 'grid2';
+    Object.keys(labels).forEach(function (key) {
+      if (key === '_title') return;
+      var multiline = !!LONG_OUTPUT_FIELDS[key];
+      var field = makeTextField(labels[key], 'content.outputs.' + groupKey + '.' + key,
+                                obj[key], multiline);
+      // متن‌های بلند تمام عرض کارت را بگیرند
+      if (multiline) field.style.gridColumn = '1 / -1';
+      grid.appendChild(field);
+    });
+    card.appendChild(grid);
+    panel.appendChild(card);
+  }
+
+  function buildOutputsPanel(panel) {
+    var outputs = state.content.outputs;
+    if (!outputs) {
+      var warn = document.createElement('div');
+      warn.className = 'hint';
+      warn.textContent = 'بلوک outputs در content.json نیست؛ چیزی برای ویرایش وجود ندارد.';
+      panel.appendChild(warn);
+      return;
+    }
+
+    var hint = document.createElement('div');
+    hint.className = 'hint';
+    hint.textContent = 'این متن‌ها در گزارش PDF، پوستر، پاورپوینت و اکسل به کار '
+      + 'می‌روند. بعد از ذخیره، فایل‌های دانلودی خودکار بازسازی می‌شوند '
+      + '(چند دقیقه طول می‌کشد).';
+    panel.appendChild(hint);
+
+    ['shared', 'report', 'poster'].forEach(function (key) {
+      if (outputs[key]) buildOutputGroup(panel, key, outputs[key]);
+    });
+
+    var office = outputs.office || {};
+
+    if (office.pptx) {
+      var pcard = document.createElement('div');
+      pcard.className = 'card';
+      var ph = document.createElement('h3');
+      ph.textContent = 'پاورپوینت';
+      pcard.appendChild(ph);
+      var pgrid = document.createElement('div');
+      pgrid.className = 'grid2';
+      pgrid.appendChild(makeTextField('عنوان جلد', 'content.outputs.office.pptx.title',
+                                      office.pptx.title));
+      pgrid.appendChild(makeTextField('زیرعنوان جلد', 'content.outputs.office.pptx.subtitle',
+                                      office.pptx.subtitle));
+      pgrid.appendChild(makeColorField('رنگ تأکید', 'content.outputs.office.pptx.accent',
+                                       office.pptx.accent));
+      pcard.appendChild(pgrid);
+      var note = makeTextField('توضیح جلد', 'content.outputs.office.pptx.cover_note',
+                               office.pptx.cover_note, true);
+      pcard.appendChild(note);
+      pcard.appendChild(makeCheckboxField('اسلایدهای نمودار ساخته شوند',
+                                          'content.outputs.office.pptx.include_charts',
+                                          office.pptx.include_charts !== false));
+      panel.appendChild(pcard);
+    }
+
+    if (office.xlsx) {
+      var xcard = document.createElement('div');
+      xcard.className = 'card';
+      var xh = document.createElement('h3');
+      xh.textContent = 'اکسل';
+      xcard.appendChild(xh);
+      var xgrid = document.createElement('div');
+      xgrid.className = 'grid2';
+      xgrid.appendChild(makeTextField('عنوان برگهٔ راهنما',
+                                      'content.outputs.office.xlsx.title',
+                                      office.xlsx.title));
+      xgrid.appendChild(makeColorField('رنگ تأکید', 'content.outputs.office.xlsx.accent',
+                                       office.xlsx.accent));
+      xcard.appendChild(xgrid);
+      panel.appendChild(xcard);
+    }
   }
 
   function buildColumnsPanel(panel) {

@@ -33,6 +33,36 @@ IMG = ROOT / "webapp" / "assets" / "img"
 
 DATA = json.loads((BUILD / "dataset.json").read_text(encoding="utf-8"))
 NAT = DATA["national"]
+
+# متن و رنگ خروجی‌ها از پنل مدیریت می‌آید. اگر content.json نبود یا کلیدی
+# نداشت، مقدار پیش‌فرضِ همین فایل به کار می‌رود تا ساخت هیچ‌وقت نشکند.
+_CONTENT_PATH = ROOT / "webapp" / "content.json"
+try:
+    CONTENT = json.loads(_CONTENT_PATH.read_text(encoding="utf-8"))
+except Exception:  # noqa: BLE001
+    CONTENT = {}
+OUTPUTS = CONTENT.get("outputs") or {}
+
+
+def cfg(path, default=""):
+    """مقدار را از outputs می‌خواند: cfg('office.pptx.title', 'پیش‌فرض')."""
+    cur = OUTPUTS
+    for part in path.split("."):
+        if not isinstance(cur, dict) or part not in cur:
+            return default
+        cur = cur[part]
+    return default if cur in (None, "") else cur
+
+
+def hex_rgb(value, default):
+    """«#rrggbb» را به RGBColor تبدیل می‌کند؛ ورودی نامعتبر را نادیده می‌گیرد."""
+    text = str(value or "").strip().lstrip("#")
+    if len(text) != 6:
+        return default
+    try:
+        return RGBColor(int(text[0:2], 16), int(text[2:4], 16), int(text[4:6], 16))
+    except ValueError:
+        return default
 PROV = DATA["provinces"]
 H = DATA["headline"]
 GK = ["low", "medium", "high", "very"]
@@ -161,16 +191,25 @@ def build_pptx():
     band.fill.transparency = 0.12
 
     logo = IMG / "nigc-logo.svg"
+    org_line = "%s — %s" % (cfg("shared.org", "شرکت ملی گاز ایران"),
+                            cfg("shared.department",
+                                "مدیریت گازرسانی، امور تعرفه‌ها و قراردادها"))
+    accent = hex_rgb(cfg("office.pptx.accent"), GAS)
     textbox(s, Inches(0.8), Inches(3.75), Inches(11.7), Inches(0.4),
-            "شرکت ملی گاز ایران — مدیریت گازرسانی، امور تعرفه‌ها و قراردادها",
-            size=13, color=INK2)
+            org_line, size=13, color=INK2)
     textbox(s, Inches(0.8), Inches(4.15), Inches(11.7), Inches(1.5),
-            "آناتومی یک زمستان", size=48, bold=True, color=INK)
+            cfg("office.pptx.title", "آناتومی یک زمستان"),
+            size=48, bold=True, color=INK)
     textbox(s, Inches(0.8), Inches(5.1), Inches(11.7), Inches(0.8),
-            "چه کسی گاز ایران را می‌سوزاند؟", size=32, bold=True, color=GAS)
+            cfg("office.pptx.subtitle", "چه کسی گاز ایران را می‌سوزاند؟"),
+            size=32, bold=True, color=accent)
     textbox(s, Inches(0.8), Inches(6.0), Inches(11.7), Inches(0.9),
-            "تحلیل مصرف گاز بخش خانگی سال ۱۴۰۴ به تفکیک پلهٔ تعرفه و استان\n"
-            "۳۱ استان · ۱۲ پلهٔ دورهٔ سرد · ۴ پلهٔ دورهٔ گرم · گزارش ۱۴۰۵/۰۵/۱۸",
+            cfg("office.pptx.cover_note",
+                "تحلیل مصرف گاز بخش خانگی سال ۱۴۰۴ به تفکیک پلهٔ تعرفه و استان")
+            + "\n"
+            + "%s · گزارش %s" % (cfg("shared.scope",
+                                     "۳۱ استان · ۱۲ پلهٔ دورهٔ سرد · ۴ پلهٔ دورهٔ گرم"),
+                                 cfg("shared.report_date", "۱۴۰۵/۰۵/۱۸")),
             size=13, color=INK2)
 
     # ------------------------------------------------- ۲ خلاصه در چهار عدد
@@ -241,6 +280,10 @@ def build_pptx():
          f"از {fa(NAT['h2_intensity_g']['very'])}× در دورهٔ گرم به "
          f"{fa(NAT['h1_intensity_g']['very'])}× در دورهٔ سرد."),
     ]
+
+    # اگر در پنل خاموش شده باشد، اسلایدهای نمودار ساخته نمی‌شوند
+    if not cfg("office.pptx.include_charts", True):
+        chart_slides = []
 
     for fname, kicker, title, note in chart_slides:
         path = PNG / fname
@@ -351,11 +394,15 @@ def build_xlsx():
     ws.title = "راهنما"
     ws.sheet_view.rightToLeft = True
     guide = [
-        ("تحلیل مصرف گاز خانگی به تفکیک پله — سال ۱۴۰۴", ""),
+        (cfg("office.xlsx.title",
+             "تحلیل مصرف گاز خانگی به تفکیک پله — سال ۱۴۰۴"), ""),
         ("", ""),
-        ("منبع", "مدیریت گازرسانی، امور تعرفه‌ها و قراردادها — شرکت ملی گاز ایران"),
-        ("تاریخ گزارش مبدأ", "۱۴۰۵/۰۵/۱۸"),
-        ("دامنه", "۳۱ استان × ۱۲ پلهٔ دورهٔ سرد × ۴ پلهٔ دورهٔ گرم"),
+        ("منبع", "%s — %s" % (cfg("shared.department",
+                                  "مدیریت گازرسانی، امور تعرفه‌ها و قراردادها"),
+                              cfg("shared.org", "شرکت ملی گاز ایران"))),
+        ("تاریخ گزارش مبدأ", cfg("shared.report_date", "۱۴۰۵/۰۵/۱۸")),
+        ("دامنه", cfg("shared.scope",
+                      "۳۱ استان × ۱۲ پلهٔ دورهٔ سرد × ۴ پلهٔ دورهٔ گرم")),
         ("", ""),
         ("برگه‌ها", ""),
         ("شاخص‌ها", "شاخص‌های محاسبه‌شده برای هر استان + نمودار میله‌ای"),
