@@ -134,15 +134,27 @@ a { color: inherit; }
   backdrop-filter: blur(14px) saturate(1.4);
   border-bottom: 1px solid var(--border);
 }
-.topbar__in { display: flex; align-items: center; gap: 1rem; height: 62px; }
-.brand { display: flex; align-items: center; gap: .6rem; font-weight: 800; font-size: 1rem; }
-.brand img { width: 26px; height: 29px; display: block; }
-.brand span { color: var(--ink); }
-.brand small { color: var(--ink-muted); font-weight: 500; font-size: .74rem; display: block;
-  line-height: 1.2; }
+.topbar__in { display: flex; align-items: center; gap: 1rem; height: 62px; overflow: hidden; }
 
+/* برند هرگز نباید بشکند یا از نوار بیرون بزند: در عرض کم اول زیرنویس
+   می‌رود، بعد عنوان، و در آخر فقط نشان می‌ماند. */
+/* برند کوچک نمی‌شود؛ همهٔ فشارِ کمبود جا را فهرست جذب می‌کند چون خودش
+   اسکرول افقی دارد. وگرنه فلکس‌باکس عنوان را به «مصرف گاز…» می‌بُرد. */
+.brand { display: flex; align-items: center; gap: .6rem; font-weight: 800; font-size: 1rem;
+  flex: none; min-width: 0; }
+.brand img { width: 26px; height: 29px; display: block; flex: none; }
+.brand > div { min-width: 0; }
+.brand span, .brand small {
+  display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.brand span { color: var(--ink); }
+.brand small { color: var(--ink-muted); font-weight: 500; font-size: .74rem;
+  line-height: 1.25; }
+
+/* بدون justify-content: وقتی فهرست سرریز می‌کند باید از «یک نگاه» شروع شود،
+   نه از آخرین آیتم. margin خودش در حالت جادار راست‌چین‌اش می‌کند. */
 .navlinks { display: flex; gap: .15rem; margin-inline-start: auto; overflow-x: auto;
-  scrollbar-width: none; }
+  flex: 1 1 auto; min-width: 0; scrollbar-width: none; }
 .navlinks::-webkit-scrollbar { display: none; }
 .navlinks a {
   padding: .38rem .68rem; border-radius: 999px; font-size: .83rem; font-weight: 500;
@@ -151,6 +163,25 @@ a { color: inherit; }
 }
 .navlinks a:hover { background: var(--surface-2); color: var(--ink); }
 .navlinks a.is-active { background: var(--surface-3); color: var(--ink); font-weight: 600; }
+
+/* --- نوار بالا در عرض کم ---
+   فهرست یازده بخش دارد، پس برند باید زودتر جا خالی کند. به‌جای بریدن متن
+   با «…»، هر بخش را کامل حذف می‌کنیم:
+     ≥ ۱۲۰۰   نشان + عنوان + زیرنویس
+     ۸۲۰-۱۱۹۹ نشان + عنوان
+     < ۸۲۰    فقط نشان
+   زیرنویس در موبایل چیزی از دست نمی‌دهد: همان منبع در سرصفحهٔ قهرمان و
+   بخش روش‌شناسی هم آمده است. */
+@media (max-width: 1199px) {
+  .brand small { display: none; }
+  .brand span { font-size: .92rem; }
+}
+@media (max-width: 819px) {
+  .topbar__in { gap: .6rem; height: 56px; }
+  .brand > div { display: none; }
+  .navlinks { margin-inline-start: 0; }
+  .navlinks a { padding: .34rem .62rem; font-size: .81rem; }
+}
 
 .iconbtn {
   flex: none; width: 38px; height: 38px; display: grid; place-items: center;
