@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<title>قاب رندر نمودار</title>
+<link rel="stylesheet" href="assets/css/app.css">
+<style>
+  /* قابی تمام‌صفحه و بدون حاشیه — فقط برای گرفتن PNG از یک نمودار */
+  html, body { margin: 0; height: 100%; background: var(--surface-1); }
+  #frame { width: 100vw; height: 100vh; }
+</style>
+</head>
+<body>
+<div id="frame"></div>
+
+<script src="assets/vendor/echarts.min.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/charts.js"></script>
+<script>
+  echarts.registerMap("iran", window.IRAN_GEO);
+
+  /** یک نمودار را با نام سازنده و ورودی‌اش در کل قاب رندر می‌کند. */
+  window.renderOne = function (fnName, opts) {
+    var builder = window.CHARTS[fnName];
+    if (!builder) return false;
+    var dom = document.getElementById("frame");
+    var option = builder(dom, opts || {});
+
+    // در تصویر ایستا انیمیشن و امکان چرخش معنا ندارد
+    option.animation = false;
+    (option.series || []).forEach(function (s) {
+      if (s.type === "map") {
+        s.roam = false;
+        s.label = s.label || {};
+        s.label.show = true;
+        s.label.formatter = function (o) { return o.name; };
+      }
+    });
+
+    // قلم‌ها را برای تصویر بزرگ کمی درشت‌تر می‌کنیم
+    (function walk(node) {
+      if (!node || typeof node !== "object") return;
+      Object.keys(node).forEach(function (k) {
+        var v = node[k];
+        if (k === "fontSize" && typeof v === "number") node[k] = v * 1.25;
+        else if (v && typeof v === "object") walk(v);
+      });
+    })(option);
+
+    echarts.init(dom, null, { renderer: "canvas" }).setOption(option, true);
+    return true;
+  };
+</script>
+</body>
+</html>

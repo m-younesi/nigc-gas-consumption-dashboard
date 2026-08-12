@@ -2,6 +2,11 @@
 secrets.md
 source_data/
 tmp/
+
+# فایل‌های اداری فقط داخل پوشهٔ دانلود نگه داشته می‌شوند
 *.pptx
 *.pdf
 *.xlsx
+!downloads/*.pptx
+!downloads/*.pdf
+!downloads/*.xlsx

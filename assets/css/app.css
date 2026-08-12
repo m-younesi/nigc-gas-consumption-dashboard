@@ -1,0 +1,434 @@
+@charset "utf-8";
+/* ==========================================================================
+   تحلیل مصرف گاز خانگی ۱۴۰۴ - سامانهٔ طراحی
+   پالت داده‌ای با scripts/validate_palette.js اعتبارسنجی شده است:
+     دسته‌ای  : آبی (مشترکین) / نارنجی (مصرف)  - هر دو حالت PASS
+     ترتیبی   : رمپ کهربایی ۴ پله‌ای            - هر دو حالت PASS
+     پیوسته   : رمپ آبی ۷ پله‌ای برای نقشه و هیت‌مپ
+     دوسویه   : آبی ↔ قرمز با میانهٔ خاکستری
+   ========================================================================== */
+
+/* ------------------------------------------------------------------ فونت‌ها */
+@font-face { font-family: "Estedad"; src: url("../fonts/Estedad-Regular.woff2") format("woff2");
+  font-weight: 400; font-display: swap; }
+@font-face { font-family: "Estedad"; src: url("../fonts/Estedad-Medium.woff2") format("woff2");
+  font-weight: 500; font-display: swap; }
+@font-face { font-family: "Estedad"; src: url("../fonts/Estedad-SemiBold.woff2") format("woff2");
+  font-weight: 600; font-display: swap; }
+@font-face { font-family: "Estedad"; src: url("../fonts/Estedad-Bold.woff2") format("woff2");
+  font-weight: 700; font-display: swap; }
+@font-face { font-family: "Estedad"; src: url("../fonts/Estedad-ExtraBold.woff2") format("woff2");
+  font-weight: 800; font-display: swap; }
+@font-face { font-family: "Estedad"; src: url("../fonts/Estedad-Black.woff2") format("woff2");
+  font-weight: 900; font-display: swap; }
+
+/* ------------------------------------------------------------------- توکن‌ها */
+:root {
+  color-scheme: dark;
+
+  /* سطوح - حالت تیره، حالت پیش‌فرض این پروژه */
+  --plane:      #0a0e14;
+  --surface-1:  #141922;
+  --surface-2:  #1b2130;
+  --surface-3:  #232a3a;
+  --border:     rgba(255,255,255,.09);
+  --border-str: rgba(255,255,255,.16);
+
+  /* مرکب */
+  --ink:        #f2f5f8;
+  --ink-2:      #a8b3c2;
+  --ink-muted:  #6f7d8f;
+  --grid:       #232a36;
+  --axis:       #37414f;
+
+  /* دسته‌ای - فقط دو نقش: مشترک و مصرف */
+  --c-subs:     #3987e5;
+  --c-gas:      #d95926;
+  --c-gas-lift: #f08040;   /* فقط برای درخشش تزئینی، نه نشانهٔ داده */
+
+  /* ترتیبی چهار گروه مصرف (کم‌رنگ‌ترین = نزدیک‌ترین به سطح) */
+  --g1: #8a4a12;
+  --g2: #c06a1e;
+  --g3: #e08a3a;
+  --g4: #f5b06a;
+
+  /* پیوسته - بزرگی (نقشه و هیت‌مپ) */
+  --s1: #16233a; --s2: #1c3f74; --s3: #2360a8; --s4: #3987e5;
+  --s5: #6da7ec; --s6: #9ec5f4; --s7: #cde2fb;
+
+  /* دوسویه - قطبیت (باقیماندهٔ اقلیمی) */
+  --d-neg-3: #1c5cab; --d-neg-2: #3987e5; --d-neg-1: #9ec5f4;
+  --d-mid:   #383835;
+  --d-pos-1: #f3a3a2; --d-pos-2: #e34948; --d-pos-3: #a72322;
+
+  /* وضعیت */
+  --ok: #0ca30c; --warn: #fab219; --serious: #ec835a; --critical: #d03b3b;
+
+  --radius:    16px;
+  --radius-sm: 10px;
+  --shadow:    0 1px 2px rgba(0,0,0,.4), 0 12px 32px -12px rgba(0,0,0,.6);
+  --maxw:      1240px;
+  --ease:      cubic-bezier(.4,0,.2,1);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --plane:      #f5f4ef;
+  --surface-1:  #fdfdfb;
+  --surface-2:  #ffffff;
+  --surface-3:  #f0efe9;
+  --border:     rgba(11,11,11,.11);
+  --border-str: rgba(11,11,11,.20);
+
+  --ink:        #10141a;
+  --ink-2:      #4a5462;
+  --ink-muted:  #7c8796;
+  --grid:       #e5e4dd;
+  --axis:       #c8c7bf;
+
+  --c-subs:     #2a78d6;
+  --c-gas:      #eb6834;
+  --c-gas-lift: #d24b18;
+
+  --g1: #e79a4e; --g2: #d97324; --g3: #b04c0f; --g4: #762d08;
+
+  --s1: #cde2fb; --s2: #9ec5f4; --s3: #6da7ec; --s4: #3987e5;
+  --s5: #256abf; --s6: #184f95; --s7: #0d366b;
+
+  --d-neg-3: #184f95; --d-neg-2: #2a78d6; --d-neg-1: #9ec5f4;
+  --d-mid:   #f0efec;
+  --d-pos-1: #f3a3a2; --d-pos-2: #e34948; --d-pos-3: #a72322;
+
+  --shadow: 0 1px 2px rgba(11,11,11,.06), 0 12px 32px -14px rgba(11,11,11,.18);
+}
+
+/* --------------------------------------------------------------------- پایه */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  margin: 0;
+  background: var(--plane);
+  color: var(--ink);
+  font-family: "Estedad", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 16px;
+  line-height: 1.75;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 { margin: 0; line-height: 1.35; font-weight: 800; letter-spacing: -.01em; }
+p { margin: 0 0 1em; }
+a { color: inherit; }
+
+.wrap { width: min(100% - 2.5rem, var(--maxw)); margin-inline: auto; }
+.tnum { font-variant-numeric: tabular-nums; }
+
+/* ------------------------------------------------------------------ نوار بالا */
+.topbar {
+  position: sticky; top: 0; z-index: 60;
+  background: color-mix(in srgb, var(--plane) 82%, transparent);
+  backdrop-filter: blur(14px) saturate(1.4);
+  border-bottom: 1px solid var(--border);
+}
+.topbar__in { display: flex; align-items: center; gap: 1rem; height: 62px; }
+.brand { display: flex; align-items: center; gap: .6rem; font-weight: 800; font-size: 1rem; }
+.brand img { width: 26px; height: 29px; display: block; }
+.brand span { color: var(--ink); }
+.brand small { color: var(--ink-muted); font-weight: 500; font-size: .74rem; display: block;
+  line-height: 1.2; }
+
+.navlinks { display: flex; gap: .15rem; margin-inline-start: auto; overflow-x: auto;
+  scrollbar-width: none; }
+.navlinks::-webkit-scrollbar { display: none; }
+.navlinks a {
+  padding: .38rem .68rem; border-radius: 999px; font-size: .83rem; font-weight: 500;
+  color: var(--ink-2); text-decoration: none; white-space: nowrap;
+  transition: background .18s var(--ease), color .18s var(--ease);
+}
+.navlinks a:hover { background: var(--surface-2); color: var(--ink); }
+.navlinks a.is-active { background: var(--surface-3); color: var(--ink); font-weight: 600; }
+
+.iconbtn {
+  flex: none; width: 38px; height: 38px; display: grid; place-items: center;
+  border: 1px solid var(--border); border-radius: 10px; background: var(--surface-1);
+  color: var(--ink-2); cursor: pointer; transition: all .18s var(--ease);
+}
+.iconbtn:hover { color: var(--ink); border-color: var(--border-str); background: var(--surface-2); }
+.iconbtn svg { width: 18px; height: 18px; }
+
+/* نوار پیشرفت اسکرول */
+.scrollbar-progress {
+  position: fixed; inset-inline: 0; top: 0; height: 3px; z-index: 70;
+  background: linear-gradient(to left, var(--c-gas), var(--c-subs));
+  transform-origin: right center; transform: scaleX(0);
+}
+
+/* -------------------------------------------------------------------- قهرمان */
+.hero { position: relative; min-height: min(94vh, 860px); display: grid; align-items: center;
+  overflow: hidden; }
+.hero__bg { position: absolute; inset: 0; z-index: 0; }
+.hero__bg img { width: 100%; height: 100%; object-fit: cover; object-position: center 62%; }
+.hero__bg::after {
+  content: ""; position: absolute; inset: 0;
+  background:
+    radial-gradient(120% 85% at 78% 18%, transparent 0%, color-mix(in srgb, var(--plane) 72%, transparent) 62%, var(--plane) 100%),
+    linear-gradient(to top, var(--plane) 4%, color-mix(in srgb, var(--plane) 55%, transparent) 45%, color-mix(in srgb, var(--plane) 30%, transparent) 100%);
+}
+.hero__in { position: relative; z-index: 1; padding: 5rem 0 3.5rem; }
+
+.eyebrow {
+  display: inline-flex; align-items: center; gap: .5rem; font-size: .8rem; font-weight: 600;
+  letter-spacing: .02em; color: var(--ink-2); background: color-mix(in srgb, var(--surface-1) 78%, transparent);
+  border: 1px solid var(--border); padding: .34rem .85rem; border-radius: 999px;
+  backdrop-filter: blur(8px);
+}
+.eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--c-gas-lift); box-shadow: 0 0 12px var(--c-gas-lift); }
+
+.hero h1 {
+  font-size: clamp(2.1rem, 6.2vw, 4.15rem); font-weight: 900; margin: 1.1rem 0 0;
+  letter-spacing: -.025em; max-width: 19ch;
+}
+.hero h1 em {
+  font-style: normal;
+  background: linear-gradient(105deg, var(--c-gas-lift), #ffc98a 55%, var(--c-gas-lift));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.hero__lead { font-size: clamp(1rem, 2.1vw, 1.2rem); color: var(--ink-2); max-width: 56ch;
+  margin: 1.15rem 0 0; line-height: 1.85; }
+.hero__meta { display: flex; flex-wrap: wrap; gap: .5rem 1.4rem; margin-top: 1.6rem;
+  font-size: .82rem; color: var(--ink-muted); }
+.hero__meta b { color: var(--ink-2); font-weight: 600; }
+
+.hero__stats {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1px; margin-top: 2.6rem; background: var(--border);
+  border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
+}
+.hero__stat { background: color-mix(in srgb, var(--surface-1) 88%, transparent);
+  backdrop-filter: blur(10px); padding: 1.1rem 1.15rem; }
+.hero__stat .v { font-size: clamp(1.55rem, 3.4vw, 2.15rem); font-weight: 800; line-height: 1.1;
+  display: flex; align-items: baseline; gap: .12rem; }
+.hero__stat .v small { font-size: .5em; font-weight: 600; color: var(--ink-2); }
+.hero__stat .k { font-size: .78rem; color: var(--ink-muted); margin-top: .3rem; }
+
+.scrollcue { display: flex; justify-content: center; padding-bottom: 1.6rem; position: relative;
+  z-index: 1; }
+.scrollcue span { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%;
+  border: 1px solid var(--border-str); color: var(--ink-muted); animation: bob 2.4s infinite var(--ease); }
+@keyframes bob { 0%,100% { transform: translateY(0); opacity: .55; }
+                 50%     { transform: translateY(6px); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .scrollcue span { animation: none; } }
+
+/* ------------------------------------------------------------------ بخش‌بندی */
+.section { padding: clamp(3.2rem, 7vw, 5.6rem) 0; position: relative; }
+.section--alt { background: var(--surface-1); border-block: 1px solid var(--border); }
+
+.sechead { max-width: 68ch; margin-bottom: 2.4rem; }
+.sechead__no {
+  font-size: .76rem; font-weight: 700; letter-spacing: .12em; color: var(--c-gas-lift);
+  display: flex; align-items: center; gap: .6rem; margin-bottom: .7rem;
+}
+.sechead__no::after { content: ""; height: 1px; flex: 1; max-width: 130px;
+  background: linear-gradient(to left, var(--border-str), transparent); }
+.sechead h2 { font-size: clamp(1.5rem, 3.6vw, 2.2rem); letter-spacing: -.02em; }
+.sechead p { color: var(--ink-2); margin: .85rem 0 0; font-size: 1.02rem; }
+
+/* -------------------------------------------------------------------- کارت‌ها */
+.card {
+  background: var(--surface-1); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.35rem 1.4rem 1.15rem; box-shadow: var(--shadow); min-width: 0;
+}
+.section--alt .card { background: var(--surface-2); }
+.card__head { display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap;
+  margin-bottom: .35rem; }
+.card__title { font-size: 1.02rem; font-weight: 700; }
+.card__sub { font-size: .84rem; color: var(--ink-muted); margin-top: .2rem; line-height: 1.6; }
+.card__tools { margin-inline-start: auto; display: flex; gap: .4rem; flex-wrap: wrap; }
+
+.grid { display: grid; gap: 1.15rem; }
+.grid--2 { grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); }
+.grid--3 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+@media (min-width: 1040px) { .grid--3 { grid-template-columns: repeat(3, 1fr); } }
+.grid--sidebar { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); }
+@media (max-width: 900px) { .grid--sidebar { grid-template-columns: 1fr; } }
+
+/* ------------------------------------------------------------------- کنترل‌ها */
+.segmented { display: inline-flex; background: var(--surface-3); border: 1px solid var(--border);
+  border-radius: 999px; padding: 3px; gap: 2px; }
+.segmented button {
+  border: 0; background: transparent; color: var(--ink-2); font: inherit; font-size: .82rem;
+  font-weight: 600; padding: .3rem .82rem; border-radius: 999px; cursor: pointer;
+  white-space: nowrap; transition: all .18s var(--ease);
+}
+.segmented button:hover { color: var(--ink); }
+.segmented button[aria-pressed="true"] { background: var(--surface-1); color: var(--ink);
+  box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+:root[data-theme="light"] .segmented button[aria-pressed="true"] { background: #fff; }
+
+select.control, input.control {
+  background: var(--surface-3); color: var(--ink); border: 1px solid var(--border);
+  border-radius: 10px; padding: .38rem .7rem; font: inherit; font-size: .84rem;
+  font-family: inherit; max-width: 100%;
+}
+select.control:focus-visible, input.control:focus-visible {
+  outline: 2px solid var(--c-subs); outline-offset: 1px;
+}
+
+/* ------------------------------------------------------------------ نمودارها */
+.chart { width: 100%; height: 380px; }
+.chart--tall { height: 520px; }
+.chart--xtall { height: 660px; }
+.chart--short { height: 290px; }
+.chart--map { height: 560px; }
+@media (max-width: 640px) {
+  .chart, .chart--short { height: 320px; }
+  .chart--tall, .chart--xtall, .chart--map { height: 440px; }
+}
+
+/* راهنمای دستی زیر نمودار */
+.legend { display: flex; flex-wrap: wrap; gap: .45rem 1.1rem; margin-top: .85rem;
+  font-size: .82rem; color: var(--ink-2); }
+.legend i { width: 11px; height: 11px; border-radius: 3px; display: inline-block;
+  margin-inline-end: .4rem; vertical-align: -1px; }
+
+/* یادداشت تحلیلی زیر نمودار */
+.takeaway {
+  margin-top: 1rem; padding: .8rem 1rem; border-radius: var(--radius-sm);
+  background: var(--surface-3); border-inline-start: 3px solid var(--c-gas-lift);
+  font-size: .89rem; color: var(--ink-2); line-height: 1.8;
+}
+.takeaway b { color: var(--ink); font-weight: 700; }
+
+/* ------------------------------------------------------------------ کاشی آمار */
+.stat {
+  background: var(--surface-1); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.25rem 1.3rem; position: relative; overflow: hidden;
+}
+.section--alt .stat { background: var(--surface-2); }
+.stat::after {
+  content: ""; position: absolute; inset-block: 0; inset-inline-start: 0; width: 3px;
+  background: var(--accent, var(--c-subs));
+}
+.stat__v { font-size: clamp(1.9rem, 4.4vw, 2.7rem); font-weight: 800; line-height: 1.05;
+  display: flex; align-items: baseline; gap: .1rem; }
+.stat__v small { font-size: .42em; font-weight: 600; color: var(--ink-2); }
+.stat__k { font-weight: 600; font-size: .92rem; margin-top: .5rem; }
+.stat__d { font-size: .82rem; color: var(--ink-muted); margin-top: .25rem; line-height: 1.7; }
+
+/* --------------------------------------------------------------- وافل ۱۰۰تایی */
+.waffle { display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; aspect-ratio: 1;
+  max-width: 260px; }
+.waffle i { border-radius: 3px; background: var(--cell); aspect-ratio: 1; display: block;
+  transition: transform .18s var(--ease); }
+.waffle i:hover { transform: scale(1.22); }
+.waffle-pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2rem; justify-items: center; }
+.waffle-block { text-align: center; }
+.waffle-block h4 { font-size: .94rem; margin-bottom: .9rem; }
+
+/* ------------------------------------------------------------- کاوشگر استان */
+.explorer__head { display: flex; flex-wrap: wrap; align-items: center; gap: .8rem 1.2rem;
+  margin-bottom: 1.15rem; }
+.explorer__name { font-size: 1.5rem; font-weight: 800; }
+.badges { display: flex; flex-wrap: wrap; gap: .45rem; }
+.badge {
+  font-size: .78rem; font-weight: 600; padding: .26rem .68rem; border-radius: 999px;
+  background: var(--surface-3); border: 1px solid var(--border); color: var(--ink-2);
+}
+.badge b { color: var(--ink); }
+.badge--hot { border-color: color-mix(in srgb, var(--critical) 45%, transparent);
+  color: var(--critical); }
+.badge--cool { border-color: color-mix(in srgb, var(--c-subs) 45%, transparent);
+  color: var(--c-subs); }
+
+.minitiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: .7rem; }
+.minitile { background: var(--surface-3); border-radius: var(--radius-sm); padding: .7rem .8rem; }
+.minitile .v { font-size: 1.3rem; font-weight: 800; line-height: 1.2; }
+.minitile .k { font-size: .74rem; color: var(--ink-muted); margin-top: .15rem; }
+
+/* ---------------------------------------------------------------------- جدول */
+.tablewrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-sm);
+  max-height: 560px; overflow-y: auto; }
+table.data { width: 100%; border-collapse: collapse; font-size: .85rem; min-width: 780px; }
+table.data th, table.data td { padding: .55rem .7rem; text-align: center; white-space: nowrap;
+  border-bottom: 1px solid var(--border); }
+table.data th {
+  position: sticky; top: 0; z-index: 2; background: var(--surface-3); font-weight: 700;
+  font-size: .8rem; cursor: pointer; user-select: none;
+}
+table.data th:hover { color: var(--c-gas-lift); }
+table.data th[aria-sort]::after { content: "▾"; margin-inline-start: .3rem; font-size: .75em; }
+table.data th[aria-sort="ascending"]::after { content: "▴"; }
+table.data td:first-child, table.data th:first-child {
+  text-align: right; position: sticky; inset-inline-start: 0; background: var(--surface-1);
+  font-weight: 600; z-index: 1;
+}
+table.data th:first-child { background: var(--surface-3); z-index: 3; }
+.section--alt table.data td:first-child { background: var(--surface-2); }
+table.data tbody tr:hover td { background: var(--surface-3); }
+table.data tbody tr.is-national td { font-weight: 700; background: var(--surface-3); }
+
+/* ------------------------------------------------------------------ دانلودها */
+.dl-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1rem; }
+.dl {
+  display: flex; gap: .95rem; align-items: flex-start; text-decoration: none; color: inherit;
+  background: var(--surface-1); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.15rem 1.2rem; transition: all .2s var(--ease);
+}
+.section--alt .dl { background: var(--surface-2); }
+.dl:hover { border-color: var(--border-str); transform: translateY(-3px); box-shadow: var(--shadow); }
+.dl__ico { flex: none; width: 42px; height: 42px; border-radius: 11px; display: grid;
+  place-items: center; background: var(--surface-3); color: var(--tone, var(--c-subs)); }
+.dl__ico svg { width: 21px; height: 21px; }
+.dl__t { font-weight: 700; font-size: .96rem; }
+.dl__d { font-size: .8rem; color: var(--ink-muted); margin-top: .18rem; line-height: 1.65; }
+.dl__s { font-size: .74rem; color: var(--ink-muted); margin-top: .45rem; }
+
+/* --------------------------------------------------------- روش‌شناسی و پانویس */
+.prose { max-width: 74ch; color: var(--ink-2); }
+.prose h3 { color: var(--ink); font-size: 1.05rem; margin: 1.9rem 0 .6rem; }
+.prose h3:first-child { margin-top: 0; }
+.prose ul { padding-inline-start: 1.15rem; margin: 0 0 1em; }
+.prose li { margin-bottom: .45rem; }
+.prose code { background: var(--surface-3); padding: .1rem .38rem; border-radius: 5px;
+  font-size: .88em; font-family: ui-monospace, "Cascadia Code", monospace; }
+.prose a { color: var(--c-subs); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+
+.credits { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: .8rem;
+  font-size: .82rem; }
+.credit { background: var(--surface-3); border-radius: var(--radius-sm); padding: .7rem .85rem;
+  color: var(--ink-2); }
+.credit b { display: block; color: var(--ink); font-weight: 600; margin-bottom: .12rem; }
+.credit a { color: var(--c-subs); }
+
+.foot { border-top: 1px solid var(--border); padding: 2.4rem 0 3rem; color: var(--ink-muted);
+  font-size: .84rem; }
+.foot__in { display: flex; flex-wrap: wrap; gap: 1rem 2rem; align-items: center; }
+.foot img { width: 30px; opacity: .75; }
+
+/* ------------------------------------------------------------ ظهور با اسکرول */
+.reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s var(--ease),
+  transform .7s var(--ease); }
+.reveal.is-in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* -------------------------------------------------------------- دسترس‌پذیری */
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+:focus-visible { outline: 2px solid var(--c-subs); outline-offset: 2px; border-radius: 4px; }
+
+.skip {
+  position: absolute; inset-inline-start: 1rem; top: -70px; z-index: 100; background: var(--surface-2);
+  color: var(--ink); padding: .6rem 1rem; border-radius: 0 0 10px 10px; border: 1px solid var(--border);
+  transition: top .2s var(--ease); text-decoration: none;
+}
+.skip:focus { top: 0; }

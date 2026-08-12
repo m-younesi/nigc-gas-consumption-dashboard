@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>پوستر: آناتومی یک زمستان — مصرف گاز خانگی ایران ۱۴۰۴</title>
+<meta name="description" content="اینفوگرافیک تک‌برگ مصرف گاز خانگی ایران در سال ۱۴۰۴ به تفکیک پلهٔ تعرفه و استان.">
+<link rel="icon" href="assets/img/nigc-logo.svg">
+<link rel="stylesheet" href="assets/css/app.css">
+<style>
+  /* ---------------- چیدمان پوستر: عرض ثابت تا خروجی PNG قطعی باشد ------- */
+  body { background: #05070b; }
+
+  .poster {
+    width: 1400px; margin: 0 auto; background: var(--plane);
+    background-image:
+      radial-gradient(80% 45% at 82% 0%, rgba(240,128,64,.10), transparent 60%),
+      radial-gradient(70% 40% at 10% 100%, rgba(57,135,229,.09), transparent 60%);
+    padding: 0 0 56px; overflow: hidden;
+  }
+  /* پوستر عرض ثابت دارد؛ در نمایشگر کوچک‌تر کوچک‌نمایی می‌کنیم.
+     مرز دقیقاً زیر ۱۴۰۰ است تا خروجی PNG در عرض ۱۴۰۰ بدون zoom گرفته شود. */
+  @media (max-width: 1399px) { body { zoom: .72; } }
+  @media (max-width: 1040px) { body { zoom: .5; } }
+
+  .p-wrap { width: 1288px; margin-inline: auto; }
+
+  /* ---------------- سربرگ ---------------- */
+  .p-head { position: relative; height: 430px; overflow: hidden; margin-bottom: 40px; }
+  .p-head img.bg { position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; object-position: center 60%; }
+  .p-head::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(to top, var(--plane) 3%,
+      rgba(10,14,20,.72) 46%, rgba(10,14,20,.42) 100%);
+  }
+  .p-head__in { position: relative; z-index: 2; height: 100%; display: flex;
+    flex-direction: column; justify-content: flex-end; padding-bottom: 34px; }
+  .p-brand { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+  .p-brand img { width: 44px; }
+  .p-brand div { font-size: 15px; font-weight: 700; line-height: 1.4; }
+  .p-brand small { display: block; color: var(--ink-2); font-weight: 500; font-size: 13px; }
+  .p-title { font-size: 66px; font-weight: 900; letter-spacing: -.03em; line-height: 1.12;
+    margin: 0; max-width: 20ch; }
+  .p-title em { font-style: normal;
+    background: linear-gradient(100deg, #f08040, #ffc98a 55%, #f08040);
+    -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .p-sub { font-size: 20px; color: var(--ink-2); max-width: 74ch; margin: 18px 0 0;
+    line-height: 1.75; }
+
+  /* ---------------- شبکه ---------------- */
+  .p-row { display: grid; gap: 22px; margin-bottom: 22px; }
+  .r-4 { grid-template-columns: repeat(4, 1fr); }
+  .r-3 { grid-template-columns: repeat(3, 1fr); }
+  .r-2 { grid-template-columns: repeat(2, 1fr); }
+  .r-58 { grid-template-columns: 5fr 7fr; }
+  .r-75 { grid-template-columns: 7fr 5fr; }
+
+  .p-card { background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: 20px; padding: 24px 26px 20px; }
+  .p-card h3 { font-size: 19px; margin: 0 0 4px; }
+  .p-card p.hint { font-size: 13.5px; color: var(--ink-muted); margin: 0 0 14px;
+    line-height: 1.7; }
+
+  /* ---------------- کاشی آمار ---------------- */
+  .p-stat { background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: 20px; padding: 24px 26px; position: relative; overflow: hidden; }
+  .p-stat::after { content: ""; position: absolute; inset-block: 0; inset-inline-start: 0;
+    width: 4px; background: var(--accent); }
+  .p-stat .v { font-size: 52px; font-weight: 900; line-height: 1; display: flex;
+    align-items: baseline; gap: 2px; }
+  .p-stat .v small { font-size: .42em; font-weight: 700; color: var(--ink-2); }
+  .p-stat .k { font-size: 15px; font-weight: 600; margin-top: 12px; }
+  .p-stat .d { font-size: 13px; color: var(--ink-muted); margin-top: 5px; line-height: 1.65; }
+
+  /* ---------------- تیتر بخش ---------------- */
+  .p-band { display: flex; align-items: center; gap: 16px; margin: 40px 0 22px; }
+  .p-band h2 { font-size: 30px; letter-spacing: -.02em; white-space: nowrap; }
+  .p-band::after { content: ""; height: 1px; flex: 1;
+    background: linear-gradient(to left, var(--border-str), transparent); }
+
+  /* ---------------- وافل بزرگ ---------------- */
+  .p-waffles { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+  .p-waffle { display: grid; grid-template-columns: repeat(10, 1fr); gap: 5px; }
+  .p-waffle i { aspect-ratio: 1; border-radius: 4px; background: var(--cell); }
+  .p-waffle-t { font-size: 15px; font-weight: 700; margin-bottom: 12px; text-align: center; }
+
+  /* ---------------- فهرست رتبه ---------------- */
+  .p-list { display: flex; flex-direction: column; gap: 9px; }
+  .p-item { display: flex; align-items: center; gap: 12px; font-size: 15px; }
+  .p-item .n { width: 26px; height: 26px; flex: none; border-radius: 8px;
+    display: grid; place-items: center; font-size: 12.5px; font-weight: 700;
+    background: var(--surface-3); color: var(--ink-2); }
+  .p-item .nm { font-weight: 600; }
+  .p-item .bar { flex: 1; height: 9px; border-radius: 999px; background: var(--surface-3);
+    overflow: hidden; }
+  .p-item .bar span { display: block; height: 100%; border-radius: 999px;
+    background: var(--tone); }
+  .p-item .vl { width: 62px; text-align: left; color: var(--ink-2); font-weight: 600;
+    font-size: 14px; }
+
+  /* ---------------- نمودارها ---------------- */
+  .pc { width: 100%; }
+  .h280 { height: 280px; } .h320 { height: 320px; } .h360 { height: 360px; }
+  .h420 { height: 420px; } .h520 { height: 520px; }
+
+  .p-legend { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 14px;
+    font-size: 14px; color: var(--ink-2); }
+  .p-legend i { width: 13px; height: 13px; border-radius: 4px; display: inline-block;
+    margin-inline-end: 7px; vertical-align: -2px; }
+
+  .p-note { margin-top: 14px; padding: 12px 16px; border-radius: 12px;
+    background: var(--surface-3); border-inline-start: 3px solid var(--c-gas-lift);
+    font-size: 14.5px; color: var(--ink-2); line-height: 1.8; }
+  .p-note b { color: var(--ink); }
+
+  /* ---------------- پانویس ---------------- */
+  .p-foot { margin-top: 44px; padding-top: 26px; border-top: 1px solid var(--border);
+    display: flex; gap: 26px; align-items: flex-start; font-size: 13px;
+    color: var(--ink-muted); line-height: 1.8; }
+  .p-foot img { width: 40px; opacity: .8; flex: none; }
+  .p-foot b { color: var(--ink-2); }
+  .p-foot a { color: var(--c-subs); }
+
+  .p-back { position: fixed; inset-block-start: 18px; inset-inline-end: 18px; z-index: 20;
+    background: var(--surface-2); border: 1px solid var(--border-str); color: var(--ink);
+    padding: 9px 16px; border-radius: 999px; text-decoration: none; font-size: 14px;
+    font-weight: 600; }
+  @media print { .p-back { display: none; } body { zoom: 1; } }
+</style>
+</head>
+<body>
+<a class="p-back" href="index.html">→ بازگشت به نسخهٔ تعاملی</a>
+
+<div class="poster" id="poster">
+
+  <!-- ============================ سربرگ ============================ -->
+  <header class="p-head">
+    <img class="bg" src="assets/img/onshore.jpg" alt="">
+    <div class="p-wrap p-head__in">
+      <div class="p-brand">
+        <img src="assets/img/nigc-logo.svg" alt="">
+        <div>شرکت ملی گاز ایران
+          <small>مدیریت گازرسانی — امور تعرفه‌ها و قراردادها · گزارش ۱۴۰۵/۰۵/۱۸</small>
+        </div>
+      </div>
+      <h1 class="p-title">آناتومی یک زمستان: <em>چه کسی گاز ایران را می‌سوزاند؟</em></h1>
+      <p class="p-sub">
+        تحلیل مصرف گاز بخش خانگی در سال ۱۴۰۴ — ۳۱ استان، ۱۲ پلهٔ تعرفه در دورهٔ سرد
+        و ۴ پله در دورهٔ گرم.
+      </p>
+    </div>
+  </header>
+
+  <div class="p-wrap">
+
+    <!-- ============================ آمار کلان ============================ -->
+    <div class="p-row r-4" id="pStats"></div>
+
+    <!-- ============================ نردبان ============================ -->
+    <div class="p-band"><h2>نردبان دوازده‌پله‌ای</h2></div>
+
+    <div class="p-row r-58">
+      <div class="p-card">
+        <h3>اگر ایران فقط ۱۰۰ مشترک داشت</h3>
+        <p class="hint">هر مربع یک صدم است — سمت راست مشترکین، سمت چپ گاز مصرفی.</p>
+        <div class="p-waffles" id="pWaffles"></div>
+        <div class="p-legend" id="pWaffleLegend"></div>
+        <div class="p-note" id="pWaffleNote"></div>
+      </div>
+      <div class="p-card">
+        <h3>پروانهٔ پله‌ها — مشترک در برابر مصرف</h3>
+        <p class="hint">آبی: سهم تعداد مشترکین · نارنجی: سهم مصرف گاز. دورهٔ سرد، کل کشور.</p>
+        <div class="pc h520" id="pButterfly"></div>
+      </div>
+    </div>
+
+    <div class="p-row r-2">
+      <div class="p-card">
+        <h3>ضریب شدت مصرف در هر پله</h3>
+        <p class="hint">هر مشترک این پله چند برابر مشترک متوسط کشور گاز می‌سوزاند.</p>
+        <div class="pc h320" id="pIntensity"></div>
+      </div>
+      <div class="p-card">
+        <h3>از صد مشترک تا صد واحد گاز</h3>
+        <p class="hint">باریک‌شدن و پهن‌شدن نوارها، همان نابرابری است.</p>
+        <div class="pc h320" id="pSankey"></div>
+      </div>
+    </div>
+
+    <!-- ============================ نابرابری ============================ -->
+    <div class="p-band"><h2>فاصله تا برابری</h2></div>
+
+    <div class="p-row r-75">
+      <div class="p-card">
+        <h3>منحنی لورنز مصرف گاز — کل کشور</h3>
+        <p class="hint">
+          اگر همه یک‌اندازه مصرف می‌کردند، منحنی روی خط‌چین می‌افتاد. مساحت میان آن‌ها
+          ضریب جینی است.
+        </p>
+        <div class="pc h360" id="pLorenz"></div>
+      </div>
+      <div class="p-card">
+        <h3>نابرابرترین و یکدست‌ترین استان‌ها</h3>
+        <p class="hint">بر اساس ضریب جینی مصرف در دورهٔ سرد.</p>
+        <div class="p-list" id="pGiniList"></div>
+      </div>
+    </div>
+
+    <!-- ============================ جغرافیا ============================ -->
+    <div class="p-band"><h2>جغرافیای مصرف</h2></div>
+
+    <div class="p-row r-58">
+      <div class="p-card">
+        <h3>پرمصرف‌ترین استان‌ها نسبت به الگو</h3>
+        <p class="hint">سهم گازی که بالاتر از سقف الگو (پلهٔ ۳) سوخته است.</p>
+        <div class="p-list" id="pTopList"></div>
+      </div>
+      <div class="p-card">
+        <h3>سهم مصرف مازاد بر الگو — به تفکیک استان</h3>
+        <p class="hint">هرچه روشن‌تر، سهم بیشتری از گاز آن استان بالاتر از الگو سوخته است.</p>
+        <div class="pc h420" id="pMap"></div>
+      </div>
+    </div>
+
+    <div class="p-row r-2">
+      <div class="p-card">
+        <h3>سرما چقدر از ماجرا را توضیح می‌دهد؟</h3>
+        <p class="hint" id="pClimateHint"></p>
+        <div class="pc h360" id="pClimate"></div>
+        <div class="p-legend">
+          <span><i style="background:var(--d-pos-2)"></i>بیش از انتظار اقلیمی</span>
+          <span><i style="background:var(--d-neg-2)"></i>کمتر از انتظار اقلیمی</span>
+        </div>
+        <div class="p-note" id="pClimateNote"></div>
+      </div>
+      <div class="p-card">
+        <h3>ماتریس استان × پله</h3>
+        <p class="hint">پله‌ها از راست به چپ. استان‌ها بر اساس سهم گروه کم‌مصرف مرتب شده‌اند.</p>
+        <div class="pc h520" id="pHeat"></div>
+      </div>
+    </div>
+
+    <!-- ============================ پانویس ============================ -->
+    <footer class="p-foot">
+      <img src="assets/img/nigc-logo.svg" alt="">
+      <div>
+        <b>منبع داده:</b> چهار جدول منتشرشدهٔ مدیریت گازرسانی — امور تعرفه‌ها و قراردادها،
+        شرکت ملی گاز ایران (درصد مصرف و درصد تعداد مشترکین بخش خانگی، نیمهٔ اول و دوم ۱۴۰۴).
+        ارقام مبدأ به یک رقم اعشار گرد شده‌اند و هر ردیف برای محاسبه به مجموع ۱۰۰ نرمال شده است.
+        <br>
+        <b>ضریب جینی</b> از داده‌های تجمیع‌شده در سطح پله محاسبه شده و کران پایین نابرابری
+        واقعی است. <b>باقیماندهٔ اقلیمی</b> از رگرسیون خطی مصرف مازاد بر الگو بر میانگین
+        دمای مرکز استان به‌دست آمده. پله‌های دو نیم‌سال هم‌ارز نیستند و سهم‌های خامشان
+        بین دو دوره مقایسه نشده‌اند.
+        <br>
+        <b>نسخهٔ تعاملی، جدول کامل داده و فایل‌های PDF/Excel/PowerPoint:</b>
+        <a href="index.html">صفحهٔ اصلی گزارش</a> ·
+        مرزهای نقشه: OpenStreetMap (ODbL) · قلم: استعداد (SIL OFL) ·
+        تصاویر: ویکی‌مدیا کامنز
+      </div>
+    </footer>
+  </div>
+</div>
+
+<script src="assets/vendor/echarts.min.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/charts.js"></script>
+<script src="assets/js/poster.js"></script>
+</body>
+</html>

@@ -1,71 +1,467 @@
 <!doctype html>
-<html lang="fa" dir="rtl">
+<html lang="fa" dir="rtl" data-theme="light">
 <head>
-  <meta charset="utf-8">
-  <title>گزارش تحلیلی مصرف گاز خانگی</title>
-  <link rel="stylesheet" href="report.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>گزارش تحلیلی مصرف گاز خانگی ایران — سال ۱۴۰۴</title>
+<link rel="icon" href="assets/img/nigc-logo.svg">
+<link rel="stylesheet" href="assets/css/app.css">
+<style>
+  /* ================= صفحه‌بندی A4 برای خروجی PDF ================= */
+  @page { size: A4 portrait; margin: 0; }
+
+  html, body { background: #d9d8d2; }
+  body { font-size: 9.6pt; line-height: 1.7; }
+
+  /* ارتفاع دقیقاً ۲۹۷ میلی‌متر است، نه min-height — تا هر سرریزی
+     در بازبینی فوراً دیده شود و به صفحهٔ بعد نشت نکند. */
+  .page {
+    width: 210mm; height: 297mm; box-sizing: border-box; overflow: hidden;
+    margin: 0 auto 8mm; background: var(--plane); color: var(--ink);
+    padding: 14mm 14mm 11mm; position: relative;
+    display: flex; flex-direction: column;
+    box-shadow: 0 4px 18px rgba(0,0,0,.16);
+    break-after: page; page-break-after: always;
+  }
+  .page:last-child { break-after: auto; page-break-after: auto; margin-bottom: 0; }
+
+  @media print {
+    html, body { background: #fff; }
+    .page { margin: 0; box-shadow: none; }
+    .noprint { display: none !important; }
+  }
+
+  /* ================= سرصفحه و پاصفحه ================= */
+  .rhead {
+    display: flex; align-items: center; gap: 8px; padding-bottom: 6px;
+    border-bottom: 1px solid var(--border); margin-bottom: 6mm;
+    font-size: 8pt; color: var(--ink-muted);
+  }
+  .rhead img { width: 15px; }
+  .rhead .sep { margin-inline-start: auto; }
+
+  .rfoot {
+    margin-top: auto; padding-top: 6px; border-top: 1px solid var(--border);
+    display: flex; font-size: 7.6pt; color: var(--ink-muted); gap: 12px;
+  }
+  .rfoot .pg { margin-inline-start: auto; font-weight: 700; color: var(--ink-2); }
+
+  /* ================= جلد ================= */
+  .cover { padding: 0; overflow: hidden; justify-content: flex-end; background: #0a0e14; }
+  .cover__img { position: absolute; inset: 0; }
+  /* display:block لازم است، وگرنه فاصلهٔ خط‌پایهٔ تصویر inline صفحه را ~۲ میلی‌متر بلندتر می‌کند */
+  .cover__img img { display: block; width: 100%; height: 100%; object-fit: cover;
+    object-position: center 58%; }
+  .cover__img::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(to top, #0a0e14 6%, rgba(10,14,20,.80) 48%, rgba(10,14,20,.45) 100%);
+  }
+  .cover__in { position: relative; z-index: 2; padding: 16mm 14mm 14mm; color: #f2f5f8; }
+  .cover__brand { display: flex; align-items: center; gap: 10px; margin-bottom: 11mm; }
+  .cover__brand img { width: 34px; }
+  .cover__brand div { font-size: 10pt; font-weight: 700; line-height: 1.4; }
+  .cover__brand small { display: block; color: #a8b3c2; font-weight: 500; font-size: 8.5pt; }
+  .cover h1 { font-size: 27pt; font-weight: 900; letter-spacing: -.02em; line-height: 1.2;
+    margin: 0 0 5mm; }
+  .cover h1 em { font-style: normal; color: #f5b06a; }
+  .cover p { font-size: 10.5pt; color: #c3ccd8; margin: 0 0 6mm; max-width: 44ch; line-height: 1.8; }
+  .cover__meta { display: grid; grid-template-columns: 1fr 1fr; gap: 2.2mm 8mm;
+    font-size: 8pt; color: #a8b3c2; border-top: 1px solid rgba(255,255,255,.16);
+    padding-top: 4mm; }
+  .cover__meta b { color: #f2f5f8; font-weight: 600; display: block; }
+
+  /* ================= عناصر متنی ================= */
+  h2.rt { font-size: 15.5pt; font-weight: 800; letter-spacing: -.02em; margin: 0 0 2mm; }
+  .rkicker { font-size: 8pt; font-weight: 700; letter-spacing: .1em; color: var(--c-gas);
+    margin-bottom: 2mm; }
+  .rlead { color: var(--ink-2); font-size: 9.4pt; margin: 0 0 4mm; line-height: 1.75; }
+  h3.rs { font-size: 10.5pt; font-weight: 700; margin: 4.5mm 0 1.5mm; }
+  h3.rs:first-child { margin-top: 0; }
+
+  .rp { margin: 0 0 2.4mm; }
+  .rul { padding-inline-start: 5mm; margin: 0 0 4mm; }
+  .rul li { margin-bottom: 1.1mm; }
+
+  /* ================= کاشی آمار ================= */
+  .rstats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2.4mm; margin-bottom: 4mm; }
+  .rstats--3 { grid-template-columns: repeat(3, 1fr); }
+  .rstat { border: 1px solid var(--border); border-radius: 10px; padding: 3mm 3.4mm;
+    background: var(--surface-1); position: relative; overflow: hidden; }
+  .rstat::after { content: ""; position: absolute; inset-block: 0; inset-inline-start: 0;
+    width: 3px; background: var(--accent); }
+  .rstat .v { font-size: 16pt; font-weight: 800; line-height: 1.1; }
+  .rstat .v small { font-size: .48em; font-weight: 700; color: var(--ink-2); }
+  .rstat .k { font-size: 8pt; font-weight: 600; margin-top: 1mm; }
+  .rstat .d { font-size: 7.2pt; color: var(--ink-muted); margin-top: .6mm; line-height: 1.55; }
+
+  /* ================= کارت نمودار ================= */
+  .rfig { border: 1px solid var(--border); border-radius: 10px; background: var(--surface-1);
+    padding: 3mm 3.4mm; margin-bottom: 3mm; }
+  .rfig__t { font-size: 9.4pt; font-weight: 700; }
+  .rfig__c { font-size: 7.4pt; color: var(--ink-muted); margin: .6mm 0 1.8mm; line-height: 1.6; }
+  .rc { width: 100%; }
+  .h56 { height: 48mm; } .h64 { height: 54mm; } .h72 { height: 60mm; }
+  .h84 { height: 68mm; } .h95 { height: 75mm; } .h120 { height: 94mm; } .h150 { height: 132mm; }
+
+  .rlegend { display: flex; flex-wrap: wrap; gap: 1.5mm 5mm; margin-top: 2mm;
+    font-size: 8pt; color: var(--ink-2); }
+  .rlegend i { width: 9px; height: 9px; border-radius: 2px; display: inline-block;
+    margin-inline-end: 4px; vertical-align: -1px; }
+
+  .rnote { margin-top: 2mm; padding: 2mm 2.8mm; border-radius: 8px;
+    background: var(--surface-3); border-inline-start: 2.5px solid var(--c-gas);
+    font-size: 7.8pt; color: var(--ink-2); line-height: 1.65; }
+  .rnote b { color: var(--ink); }
+
+  .rgrid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+
+  /* ================= جدول ================= */
+  table.rt2 { width: 100%; border-collapse: collapse; font-size: 6.9pt; line-height: 1.45; }
+  table.rt2 th, table.rt2 td { padding: 0.85mm 1mm; text-align: center;
+    border-bottom: 1px solid var(--border); }
+  table.rt2 th { background: var(--surface-3); font-weight: 700; font-size: 6.7pt; }
+  table.rt2 td:first-child, table.rt2 th:first-child { text-align: right; font-weight: 600; }
+  table.rt2 tbody tr:nth-child(even) td { background: color-mix(in srgb, var(--surface-3) 55%, transparent); }
+  table.rt2 tr.tot td { font-weight: 800; background: var(--surface-3); }
+
+  .rbar { display: flex; align-items: center; gap: 2mm; }
+  .rbar .tr { flex: 1; height: 5px; background: var(--surface-3); border-radius: 99px;
+    overflow: hidden; }
+  .rbar .tr span { display: block; height: 100%; background: var(--tone); border-radius: 99px; }
+
+  .toolbar { position: fixed; top: 12px; inset-inline-end: 12px; z-index: 30; display: flex;
+    gap: 6px; }
+  .toolbar a, .toolbar button { background: var(--surface-2); border: 1px solid var(--border-str);
+    color: var(--ink); padding: 7px 13px; border-radius: 99px; font: inherit; font-size: 9pt;
+    font-weight: 600; cursor: pointer; text-decoration: none; }
+</style>
 </head>
 <body>
-  <section class="page cover">
-    <div class="cover-mark">تحلیل تکمیلی · سال ۱۴۰۴</div>
-    <h1>دو فصل، دو چهره از<br>مصرف گاز خانگی</h1>
-    <p>مقایسه هم‌زمان سهم مصرف و سهم تعداد مشترکان در ۳۱ استان</p>
-    <div class="cover-number">
-      <strong>۱۵٫۲</strong>
-      <span>واحد درصد رشد سهم مصرف پله‌های ۷ تا ۱۲ در نیمه دوم</span>
+
+<div class="toolbar noprint">
+  <button type="button" onclick="window.print()">چاپ / ذخیره به PDF</button>
+  <a href="index.html">نسخهٔ تعاملی</a>
+</div>
+
+<!-- ============================================================ ۱ جلد -->
+<section class="page cover">
+  <div class="cover__img"><img src="assets/img/onshore.jpg" alt=""></div>
+  <div class="cover__in">
+    <div class="cover__brand">
+      <img src="assets/img/nigc-logo.svg" alt="">
+      <div>شرکت ملی گاز ایران
+        <small>مدیریت گازرسانی — امور تعرفه‌ها و قراردادها</small>
+      </div>
     </div>
-    <div class="cover-orbits" aria-hidden="true"><i></i><i></i><i></i></div>
-  </section>
-
-  <section class="page">
-    <header><span>۰۱</span><h2>شکاف سهم مصرف و سهم مشترکان</h2></header>
-    <p class="intro">در نیمه اول، پله‌های بالا سهم کوچکی از مشترکان اما سهم بزرگ‌تری از مصرف را تشکیل داده‌اند. این شکاف، شدت نامتناسب مصرف را آشکار می‌کند.</p>
-    <div id="reportFlowH1" class="report-chart"></div>
-    <div class="insight-row">
-      <div><strong>۳٫۶٪</strong><span>مشترکان پله‌های بالا</span></div>
-      <div><strong>۱۰٫۹٪</strong><span>مصرف پله‌های بالا</span></div>
-      <div><strong>۴٫۷×</strong><span>شدت بسیار پرمصرف‌ها</span></div>
+    <h1>آناتومی یک زمستان<br><em>چه کسی گاز ایران را می‌سوزاند؟</em></h1>
+    <p>
+      تحلیل مصرف گاز بخش خانگی کشور در سال ۱۴۰۴، به تفکیک پلهٔ تعرفه و استان —
+      همراه با سنجش نابرابری مصرف و تفکیک اثر اقلیم از اثر رفتار.
+    </p>
+    <div class="cover__meta">
+      <div><b>دامنهٔ گزارش</b>۳۱ استان · ۱۲ پلهٔ دورهٔ سرد · ۴ پلهٔ دورهٔ گرم</div>
+      <div><b>تاریخ تهیهٔ گزارش مبدأ</b>۱۴۰۵/۰۵/۱۸</div>
+      <div><b>منبع داده</b>چهار جدول رسمی امور تعرفه‌ها و قراردادها</div>
+      <div><b>نسخهٔ تعاملی</b>در دسترس روی GitHub Pages</div>
     </div>
-    <footer>منبع: چهار جدول ارسالی شرکت ملی گاز · سال ۱۴۰۴</footer>
-  </section>
+  </div>
+</section>
 
-  <section class="page">
-    <header><span>۰۲</span><h2>فصل سرد، ساختار مصرف را جابه‌جا می‌کند</h2></header>
-    <p class="intro">سهم مصرف گروه کم‌مصرف در نیمه دوم ۱۸٫۴ واحد درصد کاهش یافته، در حالی که سهم پرمصرف‌ها و بسیار پرمصرف‌ها افزایش یافته است.</p>
-    <div id="reportSeasonal" class="report-chart"></div>
-    <div class="callout">سهم مصرف پله‌های ۷ تا ۱۲ در سطح کشور از <b>۱۰٫۹٪</b> به <b>۲۶٫۱٪</b> رسیده است.</div>
-    <footer>منبع: چهار جدول ارسالی شرکت ملی گاز · سال ۱۴۰۴</footer>
-  </section>
+<!-- ============================================================ ۲ خلاصه -->
+<section class="page">
+  <div class="rhead"><img src="assets/img/nigc-logo.svg" alt="">
+    <span>تحلیل مصرف گاز خانگی ۱۴۰۴</span><span class="sep">خلاصهٔ مدیریتی</span></div>
 
-  <section class="page">
-    <header><span>۰۳</span><h2>بیشترین جهش فصلی در فارس و ایلام</h2></header>
-    <p class="intro">رتبه‌بندی زیر تغییر سهم مصرف پله‌های ۷ تا ۱۲ را نشان می‌دهد؛ این نمودار میزان تغییر را اندازه می‌گیرد، نه علت آن را.</p>
-    <div id="reportRanking" class="report-chart tall"></div>
-    <footer>منبع: چهار جدول ارسالی شرکت ملی گاز · سال ۱۴۰۴</footer>
-  </section>
+  <div class="rkicker">فصل ۰۱</div>
+  <h2 class="rt">خلاصهٔ مدیریتی</h2>
+  <p class="rlead">
+    تعرفهٔ گاز خانگی در دورهٔ سرد دوازده پله دارد. داده نشان می‌دهد مشترکین روی این
+    نردبان به‌شدت نامتقارن پخش شده‌اند: ته نردبان شلوغ است و نوکش گران. آنچه در پی
+    می‌آید، چهار یافتهٔ اصلی این گزارش است.
+  </p>
 
-  <section class="page">
-    <header><span>۰۴</span><h2>فراوانی و شدت، دو نوع ریسک متفاوت‌اند</h2></header>
-    <p class="intro">سهم مشترکان پله‌های بالا دامنه مداخله را نشان می‌دهد؛ شدت نسبی عمق مصرف نامتناسب را. استان‌ها باید با هر دو محور خوانده شوند.</p>
-    <div id="reportRisk" class="report-chart risk"></div>
-    <footer>منبع: چهار جدول ارسالی شرکت ملی گاز · سال ۱۴۰۴</footer>
-  </section>
+  <div class="rstats rstats--3" id="rStats"></div>
 
-  <section class="page">
-    <header><span>۰۵</span><h2>سه مسیر اجرایی پیشنهادی</h2></header>
-    <div class="paths">
-      <article><em>فراوانی بالا</em><h3>مدیریت گسترده رفتار</h3><p>اطلاع‌رسانی، بازخورد مقایسه‌ای و پایش جابه‌جایی پله برای جمعیت بزرگ‌تر مشترکان.</p></article>
-      <article><em>شدت بالا</em><h3>ممیزی عمیق مشترک</h3><p>بررسی تجهیزات، زیربنا و الگوی بهره‌برداری برای جمعیت محدودتر با مصرف نامتناسب.</p></article>
-      <article><em>هر دو بالا</em><h3>بسته ترکیبی فصلی</h3><p>هدف‌گذاری هم‌زمان سهم مصرف و سهم مشترکان، متناسب با دوره گرم و سرد.</p></article>
+  <h3 class="rs">یافته‌های اصلی</h3>
+  <ol class="rul" id="rFindings"></ol>
+
+  <div class="rfig">
+    <div class="rfig__t">اگر ایران فقط ۱۰۰ مشترک داشت</div>
+    <div class="rfig__c">هر مربع یک صدم است — بالا مشترکین، پایین گاز مصرفی. دورهٔ سرد.</div>
+    <div id="rWaffles"></div>
+    <div class="rlegend" id="rWaffleLegend"></div>
+  </div>
+
+  <div class="rfoot"><span>شرکت ملی گاز ایران — مدیریت گازرسانی</span>
+    <span class="pg">۲</span></div>
+</section>
+
+<!-- ============================================================ ۳ روش -->
+<section class="page">
+  <div class="rhead"><img src="assets/img/nigc-logo.svg" alt="">
+    <span>تحلیل مصرف گاز خانگی ۱۴۰۴</span><span class="sep">روش‌شناسی</span></div>
+
+  <div class="rkicker">فصل ۰۲</div>
+  <h2 class="rt">داده و روش</h2>
+
+  <h3 class="rs">منبع و اعتبارسنجی</h3>
+  <p class="rp">
+    مبنای این گزارش چهار جدول منتشرشده توسط مدیریت گازرسانی — امور تعرفه‌ها و
+    قراردادهاست: درصد مصرف و درصد تعداد مشترکین بخش خانگی، هرکدام برای نیمهٔ اول
+    (دورهٔ سرد، تعرفهٔ ۱۲ پله‌ای) و نیمهٔ دوم (دورهٔ گرم، تعرفهٔ ۴ پله‌ای) سال ۱۴۰۴.
+  </p>
+  <p class="rp">
+    ارقام رقم‌به‌رقم از جدول‌های مبدأ استخراج و با دو آزمون مستقل صحت‌سنجی شدند:
+    نخست اینکه جمع هر ردیف باید به ۱۰۰ برسد، و دوم اینکه مجموع پله‌های هر گروه باید
+    با ردیف‌های تجمیعی خودِ جدول مبدأ بخواند. در جریان همین بررسی، یک خطای انتقالی
+    در ردیف آذربایجان شرقی شناسایی و اصلاح شد.
+  </p>
+
+  <h3 class="rs">تعریف شاخص‌ها</h3>
+  <ul class="rul">
+    <li><b>گروه‌بندی پله‌ها در دورهٔ سرد:</b> کم‌مصرف یا الگو (پله‌های ۱ تا ۳)،
+      مصرف متوسط (۴ تا ۶)، پرمصرف (۷ تا ۱۰) و بسیار پرمصرف (۱۱ و ۱۲).</li>
+    <li><b>ضریب شدت مصرف:</b> سهم مصرف یک پله تقسیم بر سهم تعداد مشترکین همان پله.
+      عدد ۵ یعنی مشترک این پله پنج برابر مشترک متوسط کشور گاز می‌سوزاند.</li>
+    <li><b>منحنی لورنز:</b> سهم تجمعی مصرف در برابر سهم تجمعی مشترکین، از کم‌مصرف
+      به پرمصرف. <b>ضریب جینی</b> برابر است با یک منهای دو برابر مساحت زیر این منحنی.</li>
+    <li><b>مصرف مازاد بر الگو:</b> صد منهای سهم مصرف گروه کم‌مصرف — یعنی سهم گازی
+      که بالاتر از سقف الگو سوخته است.</li>
+    <li><b>باقیماندهٔ اقلیمی:</b> اختلاف مصرف واقعی مازاد بر الگو با مقداری که رگرسیون
+      خطی بر حسب میانگین دمای سالانهٔ مرکز استان پیش‌بینی می‌کند. عدد مثبت یعنی استان
+      بیش از آنچه سرمایش توجیه می‌کند گاز می‌سوزاند.</li>
+  </ul>
+
+  <h3 class="rs">محدودیت‌هایی که باید در تفسیر لحاظ شود</h3>
+  <ul class="rul">
+    <li>ارقام مبدأ به یک رقم اعشار گرد شده‌اند. در محاسبات، هر ردیف به مجموع دقیق ۱۰۰
+      نرمال شده تا خطای گردکردن انباشته نشود.</li>
+    <li>ضریب جینی محاسبه‌شده <b>کران پایین</b> نابرابری واقعی است؛ نابرابری درون هر پله
+      دیده نمی‌شود، چون داده در سطح پله تجمیع شده است.</li>
+    <li>داده «درصد» است، نه حجم مطلق. سهم هر استان از کل گاز کشور از این جدول‌ها
+      قابل استخراج نیست و در این گزارش هیچ ادعایی در این باره نشده است.</li>
+    <li>پله‌های دو نیم‌سال هم‌ارز نیستند (۱۲ در برابر ۴). به همین دلیل هیچ سهم خامی
+      میان دو دوره مقایسه نشده — حتی جینی، چون تعداد بیشترِ پله ذاتاً نابرابری بیشتری
+      را آشکار می‌کند. تنها مقایسهٔ فصلی این گزارش روی <b>ضریب شدت بالاترین گروه</b>
+      انجام شده که نسبتی درون‌دوره‌ای است.</li>
+    <li>میانگین دمای استان‌ها تقریبی و بر مبنای ایستگاه مرکز استان است. برای سنجش
+      همبستگی کافی است اما مبنای تصمیم اجرایی نیست.</li>
+  </ul>
+
+  <div class="rfoot"><span>شرکت ملی گاز ایران — مدیریت گازرسانی</span>
+    <span class="pg">۳</span></div>
+</section>
+
+<!-- ============================================================ ۴ نردبان -->
+<section class="page">
+  <div class="rhead"><img src="assets/img/nigc-logo.svg" alt="">
+    <span>تحلیل مصرف گاز خانگی ۱۴۰۴</span><span class="sep">نردبان پله‌ها</span></div>
+
+  <div class="rkicker">فصل ۰۳</div>
+  <h2 class="rt">نردبان دوازده‌پله‌ای، پله به پله</h2>
+  <p class="rlead">
+    نمودار پروانه‌ای دو سهم را روبه‌روی هم می‌گذارد: چند درصد مشترکین در هر پله‌اند،
+    و آن پله چند درصد گاز کشور را می‌سوزاند. هرچه از پله‌های پایین بالا می‌رویم،
+    این دو سهم بیشتر از هم فاصله می‌گیرند.
+  </p>
+
+  <div class="rfig">
+    <div class="rfig__t">سهم مشترکین در برابر سهم مصرف، به تفکیک پله — کل کشور</div>
+    <div class="rfig__c">آبی: سهم تعداد مشترکین · نارنجی: سهم مصرف گاز. دورهٔ سرد ۱۴۰۴.</div>
+    <div class="rc h120" id="rButterfly"></div>
+    <div class="rnote" id="rButterflyNote"></div>
+  </div>
+
+  <div class="rfig">
+    <div class="rfig__t">ضریب شدت مصرف در هر پله</div>
+    <div class="rfig__c">هر مشترک این پله چند برابر مشترک متوسط کشور گاز می‌سوزاند.</div>
+    <div class="rc h72" id="rIntensity"></div>
+  </div>
+
+  <div class="rfoot"><span>شرکت ملی گاز ایران — مدیریت گازرسانی</span>
+    <span class="pg">۴</span></div>
+</section>
+
+<!-- ============================================================ ۵ نابرابری -->
+<section class="page">
+  <div class="rhead"><img src="assets/img/nigc-logo.svg" alt="">
+    <span>تحلیل مصرف گاز خانگی ۱۴۰۴</span><span class="sep">نابرابری مصرف</span></div>
+
+  <div class="rkicker">فصل ۰۴</div>
+  <h2 class="rt">فاصله تا برابری</h2>
+  <p class="rlead">
+    منحنی لورنز ابزار استاندارد سنجش نابرابری است. اگر همهٔ مشترکین یک‌اندازه گاز
+    می‌سوزاندند، منحنی روی خط‌چین قطری می‌افتاد. هرچه منحنی بیشتر فرو برود، مصرف
+    متمرکزتر است.
+  </p>
+
+  <div class="rgrid2">
+    <div class="rfig">
+      <div class="rfig__t">منحنی لورنز — کل کشور</div>
+      <div class="rfig__c">دورهٔ سرد ۱۴۰۴</div>
+      <div class="rc h72" id="rLorenz"></div>
     </div>
-    <div class="method">
-      <h3>محدودیت و گام بعد</h3>
-      <p>این تحلیل بر توزیع درصدی استوار است. برای برآورد حجم صرفه‌جویی و تحلیل علّی، تعداد واقعی مشترکان، مصرف حجمی، دما، متراژ، زیربنا و تجهیزات باید به مدل افزوده شود.</p>
+    <div class="rfig">
+      <div class="rfig__t">از صد مشترک تا صد واحد گاز</div>
+      <div class="rfig__c">پهنای نوارها در ورودی و خروجی</div>
+      <div class="rc h72" id="rSankey"></div>
     </div>
-    <footer>منبع: چهار جدول ارسالی شرکت ملی گاز · سال ۱۴۰۴</footer>
-  </section>
+  </div>
 
-  <script src="data.js"></script>
-  <script src="report.js"></script>
+  <div class="rfig">
+    <div class="rfig__t">ضریب جینی مصرف در دورهٔ سرد — به تفکیک استان</div>
+    <div class="rfig__c">از نابرابرترین در بالا تا یکدست‌ترین در پایین.</div>
+    <table class="rt2" id="rGiniTable"></table>
+  </div>
+
+  <div class="rfoot"><span>شرکت ملی گاز ایران — مدیریت گازرسانی</span>
+    <span class="pg">۵</span></div>
+</section>
+
+<!-- ============================================================ ۶ جغرافیا -->
+<section class="page">
+  <div class="rhead"><img src="assets/img/nigc-logo.svg" alt="">
+    <span>تحلیل مصرف گاز خانگی ۱۴۰۴</span><span class="sep">جغرافیای مصرف</span></div>
+
+  <div class="rkicker">فصل ۰۵</div>
+  <h2 class="rt">جغرافیای مصرف مازاد بر الگو</h2>
+  <p class="rlead">
+    نقشه، سهم گازی را نشان می‌دهد که در هر استان بالاتر از سقف الگو سوخته است.
+    هرچه روشن‌تر، این سهم بیشتر.
+  </p>
+
+  <div class="rfig">
+    <div class="rfig__t">سهم مصرف مازاد بر الگو — به تفکیک استان</div>
+    <div class="rfig__c">دورهٔ سرد ۱۴۰۴. مرزها: OpenStreetMap.</div>
+    <div class="rc h95" id="rMap"></div>
+    <div class="rnote" id="rMapNote"></div>
+  </div>
+
+  <div class="rfig">
+    <div class="rfig__t">ماتریس استان × پله — سهم مصرف</div>
+    <div class="rfig__c">پله‌ها از راست به چپ. استان‌ها بر اساس سهم گروه کم‌مصرف مرتب شده‌اند.</div>
+    <div class="rc h120" id="rHeat"></div>
+  </div>
+
+  <div class="rfoot"><span>شرکت ملی گاز ایران — مدیریت گازرسانی</span>
+    <span class="pg">۶</span></div>
+</section>
+
+<!-- ============================================================ ۷ اقلیم -->
+<section class="page">
+  <div class="rhead"><img src="assets/img/nigc-logo.svg" alt="">
+    <span>تحلیل مصرف گاز خانگی ۱۴۰۴</span><span class="sep">اقلیم و رفتار</span></div>
+
+  <div class="rkicker">فصل ۰۶</div>
+  <h2 class="rt">سرما چقدر از ماجرا را توضیح می‌دهد؟</h2>
+  <p class="rlead">
+    انتظار طبیعی این است که استان سردتر بیشتر از الگو مصرف کند، و داده این را تأیید
+    می‌کند. اما برازش خطی تنها بخشی از تفاوت‌ها را می‌پوشاند؛ آنچه باقی می‌ماند سهم
+    عواملی جز دماست.
+  </p>
+
+  <div class="rfig">
+    <div class="rfig__t">میانگین دما در برابر سهم مصرف مازاد بر الگو</div>
+    <div class="rfig__c" id="rClimateCap"></div>
+    <div class="rc h84" id="rClimate"></div>
+    <div class="rlegend">
+      <span><i style="background:var(--d-pos-2)"></i>بیش از انتظار اقلیمی</span>
+      <span><i style="background:var(--d-neg-2)"></i>کمتر از انتظار اقلیمی</span>
+    </div>
+    <div class="rnote" id="rClimateNote"></div>
+  </div>
+
+  <div class="rgrid2">
+    <div class="rfig">
+      <div class="rfig__t">بیش از انتظار اقلیمی</div>
+      <div class="rfig__c">واحد درصدی بالاتر از خط برازش</div>
+      <table class="rt2" id="rResidTop"></table>
+    </div>
+    <div class="rfig">
+      <div class="rfig__t">کمتر از انتظار اقلیمی</div>
+      <div class="rfig__c">واحد درصدی پایین‌تر از خط برازش</div>
+      <table class="rt2" id="rResidBottom"></table>
+    </div>
+  </div>
+
+  <div class="rfoot"><span>شرکت ملی گاز ایران — مدیریت گازرسانی</span>
+    <span class="pg">۷</span></div>
+</section>
+
+<!-- ============================================================ ۸ دو فصل -->
+<section class="page">
+  <div class="rhead"><img src="assets/img/nigc-logo.svg" alt="">
+    <span>تحلیل مصرف گاز خانگی ۱۴۰۴</span><span class="sep">دو فصل</span></div>
+
+  <div class="rkicker">فصل ۰۷</div>
+  <h2 class="rt">دو فصل، دو ساختار تعرفه</h2>
+  <p class="rlead">
+    چون مرز پله‌ها در دو نیم‌سال یکی نیست، سهم خام گروه‌ها را نمی‌توان بین دو دوره
+    مقایسه کرد. آنچه قابل مقایسه است، ضریب شدت است: نسبتی درون‌دوره‌ای که می‌گوید
+    پرمصرف‌ترین گروه هر دوره چقدر از مشترک متوسط همان دوره فاصله گرفته.
+  </p>
+
+  <div class="rfig">
+    <div class="rfig__t">فاصلهٔ پرمصرف‌ترین گروه تا مشترک متوسط، در دو فصل</div>
+    <div class="rfig__c">نقطهٔ آبی دورهٔ گرم و نقطهٔ نارنجی دورهٔ سرد. استان‌ها بر اساس
+      بزرگی این فاصله مرتب شده‌اند.</div>
+    <div class="rc h150" id="rSeason"></div>
+    <div class="rnote" id="rSeasonNote"></div>
+  </div>
+
+  <div class="rfoot"><span>شرکت ملی گاز ایران — مدیریت گازرسانی</span>
+    <span class="pg">۸</span></div>
+</section>
+
+<!-- ============================================================ ۹ جدول ۱ -->
+<section class="page">
+  <div class="rhead"><img src="assets/img/nigc-logo.svg" alt="">
+    <span>تحلیل مصرف گاز خانگی ۱۴۰۴</span><span class="sep">پیوست داده — شاخص‌ها</span></div>
+
+  <div class="rkicker">پیوست ۰۱</div>
+  <h2 class="rt">شاخص‌های محاسبه‌شده به تفکیک استان</h2>
+  <p class="rlead">همهٔ ستون‌ها درصدند مگر جینی، پلهٔ میانه و دما.</p>
+  <table class="rt2" id="rMainTable"></table>
+
+  <div class="rfoot"><span>شرکت ملی گاز ایران — مدیریت گازرسانی</span>
+    <span class="pg">۹</span></div>
+</section>
+
+<!-- ============================================================ ۱۰ جدول ۲ -->
+<section class="page">
+  <div class="rhead"><img src="assets/img/nigc-logo.svg" alt="">
+    <span>تحلیل مصرف گاز خانگی ۱۴۰۴</span><span class="sep">پیوست داده — مصرف</span></div>
+
+  <div class="rkicker">پیوست ۰۲</div>
+  <h2 class="rt">درصد مصرف به تفکیک پله — دورهٔ سرد</h2>
+  <p class="rlead">داده خام جدول مبدأ، پس از نرمال‌سازی به مجموع ۱۰۰.</p>
+  <table class="rt2" id="rConsTable"></table>
+
+  <div class="rfoot"><span>شرکت ملی گاز ایران — مدیریت گازرسانی</span>
+    <span class="pg">۱۰</span></div>
+</section>
+
+<!-- ============================================================ ۱۱ جدول ۳ -->
+<section class="page">
+  <div class="rhead"><img src="assets/img/nigc-logo.svg" alt="">
+    <span>تحلیل مصرف گاز خانگی ۱۴۰۴</span><span class="sep">پیوست داده — مشترکین</span></div>
+
+  <div class="rkicker">پیوست ۰۳</div>
+  <h2 class="rt">درصد تعداد مشترکین به تفکیک پله — دورهٔ سرد</h2>
+  <p class="rlead">داده خام جدول مبدأ، پس از نرمال‌سازی به مجموع ۱۰۰.</p>
+  <table class="rt2" id="rCountTable"></table>
+
+  <h3 class="rs">اعتبار تصاویر و داده‌های جانبی</h3>
+  <div style="font-size:7.2pt;color:var(--ink-muted);line-height:1.7" id="rCredits"></div>
+
+  <div class="rfoot"><span>شرکت ملی گاز ایران — مدیریت گازرسانی</span>
+    <span class="pg">۱۱</span></div>
+</section>
+
+<script src="assets/vendor/echarts.min.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/charts.js"></script>
+<script src="assets/js/report.js"></script>
 </body>
 </html>
