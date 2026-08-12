@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#09101f">
+  <meta name="description" content="تحلیل تعاملی سهم مصرف و تعداد مشترکان گاز خانگی در دو نیمه سال ۱۴۰۴">
+  <title>دو فصل، دو چهره از مصرف گاز خانگی</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="ambient ambient-a" aria-hidden="true"></div>
+  <div class="ambient ambient-b" aria-hidden="true"></div>
+
+  <header class="masthead">
+    <div class="eyebrow">تحلیل ۳۱ استان · سال ۱۴۰۴</div>
+    <h1>دو فصل، دو چهره از<br><span>مصرف گاز خانگی</span></h1>
+    <p class="lede">وقتی سهم مصرف را کنار سهم تعداد مشترکان می‌گذاریم، تفاوت میان «فراوانی مشترکان پرمصرف» و «شدت مصرف» آشکار می‌شود.</p>
+    <div class="headline-stat" aria-label="یافته ملی اصلی">
+      <strong>۱۵٫۲</strong>
+      <span>واحد درصد رشد سهم مصرف پله‌های ۷ تا ۱۲، از نیمه اول تا نیمه دوم</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="control-deck" aria-label="کنترل‌های تحلیل">
+      <label class="select-wrap">
+        <span>استان منتخب</span>
+        <select id="provinceSelect" aria-label="انتخاب استان"></select>
+      </label>
+      <fieldset class="segmented" id="halfControl">
+        <legend>دوره</legend>
+        <button type="button" data-half="h1">نیمه اول</button>
+        <button type="button" data-half="h2" aria-pressed="true">نیمه دوم</button>
+      </fieldset>
+      <fieldset class="segmented metric-control" id="metricControl">
+        <legend>منظر رتبه‌بندی</legend>
+        <button type="button" data-metric="cons" aria-pressed="true">سهم مصرف</button>
+        <button type="button" data-metric="count">سهم مشترکان</button>
+        <button type="button" data-metric="intensity">شدت نسبی</button>
+      </fieldset>
+    </section>
+
+    <section class="story-section flow-section" aria-labelledby="flowTitle">
+      <div class="section-copy">
+        <div class="section-index">۰۱</div>
+        <h2 id="flowTitle">یک جمعیت، دو توزیع متفاوت</h2>
+        <p id="flowNarrative"></p>
+        <div class="selected-facts" aria-live="polite">
+          <div><span>پله‌های بالا · مشترکان</span><strong id="upperCountValue"></strong></div>
+          <div><span>پله‌های بالا · مصرف</span><strong id="upperConsValue"></strong></div>
+          <div><span>شدت نسبی</span><strong id="upperIntensityValue"></strong></div>
+        </div>
+      </div>
+      <div class="flow-stage">
+        <svg id="flowChart" viewBox="0 0 960 520" role="img" aria-labelledby="flowChartTitle flowChartDesc">
+          <title id="flowChartTitle">مقایسه سهم مشترکان و سهم مصرف در چهار گروه</title>
+          <desc id="flowChartDesc">روبان‌های رنگی تغییر سهم چهار گروه مصرف را میان تعداد مشترکان و مصرف نشان می‌دهد.</desc>
+        </svg>
+        <div class="legend" aria-label="راهنمای گروه‌های مصرف">
+          <span><i class="low"></i>کم‌مصرف</span>
+          <span><i class="medium"></i>متوسط</span>
+          <span><i class="high"></i>پرمصرف</span>
+          <span><i class="very"></i>بسیار پرمصرف</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="story-section risk-section" aria-labelledby="riskTitle">
+      <div class="section-copy">
+        <div class="section-index">۰۲</div>
+        <h2 id="riskTitle">ریسک بالا همیشه یک معنا ندارد</h2>
+        <p>محور افقی سهم مشترکان پله‌های بالا را نشان می‌دهد؛ محور عمودی می‌گوید مصرف این گروه چند برابر سهم جمعیتی آن است. هر استان یک پاسخ سیاستی متفاوت می‌طلبد.</p>
+        <div class="risk-key">
+          <span><b class="risk-dot selected"></b>استان منتخب</span>
+          <span><b class="risk-dot national"></b>کل کشور</span>
+          <span><b class="risk-dot peer"></b>سایر استان‌ها</span>
+        </div>
+      </div>
+      <div class="risk-stage">
+        <svg id="riskChart" viewBox="0 0 960 650" role="img" aria-labelledby="riskChartTitle riskChartDesc">
+          <title id="riskChartTitle">فضای ریسک استان‌ها</title>
+          <desc id="riskChartDesc">پراکندگی استان‌ها بر اساس سهم مشترکان پله‌های بالا و شدت مصرف نسبی.</desc>
+        </svg>
+        <div id="riskDetail" class="risk-detail" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="story-section ranking-section" aria-labelledby="rankTitle">
+      <div class="section-copy">
+        <div class="section-index">۰۳</div>
+        <h2 id="rankTitle">فصل سرد، نقشه اولویت‌ها را جابه‌جا می‌کند</h2>
+        <p id="rankNarrative"></p>
+        <div class="metric-definition" id="metricDefinition"></div>
+      </div>
+      <div class="ranking-stage">
+        <svg id="rankingChart" viewBox="0 0 960 680" role="img" aria-labelledby="rankingChartTitle rankingChartDesc">
+          <title id="rankingChartTitle">رتبه‌بندی استان‌ها</title>
+          <desc id="rankingChartDesc">ده استان نخست بر اساس منظر انتخاب‌شده نمایش داده می‌شوند.</desc>
+        </svg>
+      </div>
+    </section>
+
+    <section class="story-section action-section" aria-labelledby="actionTitle">
+      <div class="section-copy">
+        <div class="section-index">۰۴</div>
+        <h2 id="actionTitle">از مشاهده تا مداخله</h2>
+      </div>
+      <ol class="action-paths">
+        <li>
+          <span>فراوانی بالا</span>
+          <strong>مدیریت گسترده رفتار و جابه‌جایی پله</strong>
+          <p>وقتی سهم مشترکان پله‌های بالا زیاد است، پیام‌رسانی و برنامه‌های عمومی دامنه اثر بیشتری دارند.</p>
+        </li>
+        <li>
+          <span>شدت بالا</span>
+          <strong>ممیزی عمیق مشترک و ساختمان</strong>
+          <p>وقتی تعداد محدودتری مصرف نامتناسب دارد، تجهیزات، زیربنا و الگوی بهره‌برداری باید بررسی شود.</p>
+        </li>
+        <li>
+          <span>هر دو بالا</span>
+          <strong>بسته ترکیبی و هدف‌گذاری فصلی</strong>
+          <p>استان‌های هم‌زمان درگیر فراوانی و شدت، به برنامه چندلایه و پایش دوشاخصی نیاز دارند.</p>
+        </li>
+      </ol>
+    </section>
+  </main>
+
+  <footer>
+    <p>منبع: چهار جدول ارسالی شرکت ملی گاز · تحلیل توزیع درصدی سال ۱۴۰۴</p>
+    <p>شدت نسبی = سهم مصرف گروه ÷ سهم تعداد مشترکان همان گروه</p>
+  </footer>
+
+  <div id="chartTooltip" class="chart-tooltip" role="status" aria-live="polite"></div>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
