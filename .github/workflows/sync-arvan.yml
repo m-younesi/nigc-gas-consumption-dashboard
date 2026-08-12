@@ -7,10 +7,11 @@ on:
     branches: [main]
   workflow_dispatch:
 
-# اگر چند پوش پشت سر هم آمد، فقط آخری مهم است؛ ولی اجرای در حال انجام را
-# نصفه رها نمی‌کنیم تا باکت در وضعیت نیمه‌آپلود نماند.
+# گروه با rebuild-downloads مشترک است تا دو ورک‌فلو همزمان روی باکت
+# ننویسند. اجرای در حال انجام را نصفه رها نمی‌کنیم، وگرنه باکت ممکن است
+# در وضعیت نیمه‌آپلود بماند.
 concurrency:
-  group: sync-arvan
+  group: arvan-bucket
   cancel-in-progress: false
 
 jobs:

@@ -1,0 +1,8 @@
+{
+  "name": "nigc-downloads-build",
+  "private": true,
+  "description": "وابستگی‌های اسکریپت‌های ساخت خروجی‌های دانلودی",
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}
