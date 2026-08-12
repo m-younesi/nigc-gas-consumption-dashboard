@@ -90,7 +90,6 @@
 
   ready(init);
 
-})();
   function doLogin() {
     var password = els.passwordInput.value || '';
     if (!password) return;
@@ -110,7 +109,10 @@
       } else {
         els.loginError.textContent = 'رمز عبور نادرست است.';
       }
-    }).catch(function () {
+    }).catch(function (err) {
+      // خطا را در کنسول هم می‌گذاریم؛ وگرنه ایرادِ شبکه/CORS از بیرون
+      // از یک «رمز اشتباه» قابل تشخیص نیست.
+      if (window.console) console.error('login failed:', err);
       els.loginBtn.disabled = false;
       els.loginError.textContent = 'خطا در برقراری ارتباط با سرور.';
     });
@@ -714,3 +716,5 @@
     card.appendChild(wrap);
     panel.appendChild(card);
   }
+
+})();
