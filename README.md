@@ -12,6 +12,20 @@
 | `poster.html` | نسخهٔ اینفوگرافیک تک‌برگ |
 | `report.html` | گزارش صفحه‌بندی‌شدهٔ A4 (مبنای فایل PDF) |
 
+## میزبانی
+
+سایت روی دو میزبان سرو می‌شود و هر دو یک محتوا دارند:
+
+| آدرس | توضیح |
+|---|---|
+| <https://m-younesi.github.io/nigc-gas-consumption-dashboard/> | گیت‌هاب پیجز — مبدأ اصلی |
+| <http://nigc-dashboard.s3-website.ir-thr-at1.arvanstorage.ir> | آبجکت‌استوریج ابر آروان |
+| <https://nigc-dashboard.s3.ir-thr-at1.arvanstorage.ir/index.html> | همان باکت، با HTTPS |
+
+همگام‌سازی خودکار است: هر پوش روی `main` — شامل کامیت‌هایی که پنل مدیریت
+می‌زند — ورک‌فلوی [`sync-arvan.yml`](.github/workflows/sync-arvan.yml) را اجرا
+می‌کند و باکت را آینه می‌کند. دخالت دستی لازم نیست.
+
 ## دانلودها — پوشهٔ `downloads/`
 
 گزارش کامل PDF · ارائهٔ پاورپوینت · کارپوشهٔ اکسل · پوستر PNG · دادهٔ خام CSV
