@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>آناتومی یک زمستان — تحلیل مصرف گاز خانگی ایران ۱۴۰۴</title>
-<meta name="description" content="تحلیل تعاملی مصرف گاز بخش خانگی ایران در سال ۱۴۰۴ به تفکیک پلهٔ تعرفه و استان: نابرابری مصرف، اثر اقلیم، و نقشهٔ کشوری.">
+<title id="metaTitle">آناتومی یک زمستان — تحلیل مصرف گاز خانگی ایران ۱۴۰۴</title>
+<meta id="metaDescription" name="description" content="تحلیل تعاملی مصرف گاز بخش خانگی ایران در سال ۱۴۰۴ به تفکیک پلهٔ تعرفه و استان: نابرابری مصرف، اثر اقلیم، و نقشهٔ کشوری.">
 <meta name="theme-color" content="#0a0e14">
-<meta property="og:title" content="آناتومی یک زمستان — مصرف گاز خانگی ایران ۱۴۰۴">
-<meta property="og:description" content="۰٫۷٪ از مشترکین، ۳٫۳٪ از گاز. تحلیل تعاملی مصرف گاز خانگی به تفکیک پله و استان.">
+<meta id="metaOgTitle" property="og:title" content="آناتومی یک زمستان — مصرف گاز خانگی ایران ۱۴۰۴">
+<meta id="metaOgDescription" property="og:description" content="۰٫۷٪ از مشترکین، ۳٫۳٪ از گاز. تحلیل تعاملی مصرف گاز خانگی به تفکیک پله و استان.">
 <meta property="og:type" content="website">
 <link rel="icon" href="assets/img/nigc-logo.svg">
 <link rel="preload" href="assets/fonts/Estedad-Bold.woff2" as="font" type="font/woff2" crossorigin>
@@ -24,23 +24,11 @@
     <div class="brand">
       <img src="assets/img/nigc-logo.svg" alt="" aria-hidden="true">
       <div>
-        <span>مصرف گاز خانگی ۱۴۰۴</span>
-        <small>شرکت ملی گاز ایران — به تفکیک پله و استان</small>
+        <span id="brandTitle">مصرف گاز خانگی ۱۴۰۴</span>
+        <small id="brandSubtitle">شرکت ملی گاز ایران — به تفکیک پله و استان</small>
       </div>
     </div>
-    <nav class="navlinks" id="nav" aria-label="فهرست بخش‌ها">
-      <a href="#glance">یک نگاه</a>
-      <a href="#ladder">نردبان پله‌ها</a>
-      <a href="#flow">جریان مصرف</a>
-      <a href="#inequality">نابرابری</a>
-      <a href="#map">نقشهٔ کشور</a>
-      <a href="#matrix">ماتریس استان‌ها</a>
-      <a href="#climate">اقلیم و رفتار</a>
-      <a href="#season">دو فصل</a>
-      <a href="#explorer">کاوشگر استان</a>
-      <a href="#table">داده‌ها</a>
-      <a href="#downloads">دانلود</a>
-    </nav>
+    <nav class="navlinks" id="nav" aria-label="فهرست بخش‌ها"></nav>
     <button class="iconbtn" id="themeBtn" type="button" aria-label="تغییر روشنایی">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
            stroke-linecap="round" aria-hidden="true"><path id="themeIcon"
@@ -54,20 +42,20 @@
 <!-- ==================================================== قهرمان -->
 <section class="hero">
   <div class="hero__bg">
-    <img src="assets/img/onshore.jpg" alt="تأسیسات خشکی مجتمع گازی پارس جنوبی در شب" fetchpriority="high">
+    <img id="heroBgImg" src="assets/img/onshore.jpg" alt="تأسیسات خشکی مجتمع گازی پارس جنوبی در شب" fetchpriority="high">
   </div>
   <div class="wrap hero__in">
-    <span class="eyebrow">گزارش تحلیلی — سال ۱۴۰۴</span>
-    <h1>آناتومی یک زمستان: <em>چه کسی گاز ایران را می‌سوزاند؟</em></h1>
-    <p class="hero__lead">
+    <span class="eyebrow" id="heroEyebrow">گزارش تحلیلی — سال ۱۴۰۴</span>
+    <h1 id="heroTitle">آناتومی یک زمستان: <em>چه کسی گاز ایران را می‌سوزاند؟</em></h1>
+    <p class="hero__lead" id="heroLead">
       تعرفهٔ گاز خانگی در دورهٔ سرد دوازده پله دارد. این گزارش نشان می‌دهد مشترکین ایران
       روی این نردبان چگونه پخش شده‌اند، هر پله چه سهمی از گاز کشور را می‌بلعد، و چرا
       تفاوت استان‌ها را نمی‌توان فقط با سرما توضیح داد.
     </p>
     <div class="hero__meta">
-      <span>منبع: <b>مدیریت گازرسانی — امور تعرفه‌ها و قراردادها</b></span>
-      <span>تاریخ گزارش: <b>۱۴۰۵/۰۵/۱۸</b></span>
-      <span>دامنه: <b>۳۱ استان × ۱۲ پله × ۲ نیم‌سال</b></span>
+      <span id="heroMetaSource">منبع: <b>مدیریت گازرسانی — امور تعرفه‌ها و قراردادها</b></span>
+      <span id="heroMetaDate">تاریخ گزارش: <b>۱۴۰۵/۰۵/۱۸</b></span>
+      <span id="heroMetaScope">دامنه: <b>۳۱ استان × ۱۲ پله × ۲ نیم‌سال</b></span>
     </div>
 
     <div class="hero__stats" id="heroStats"></div>
@@ -84,9 +72,9 @@
 <section class="section section--alt" id="glance">
   <div class="wrap">
     <div class="sechead reveal">
-      <div class="sechead__no">بخش ۰۱</div>
-      <h2>یک نگاه: نردبانی که ته آن شلوغ است و نوکش گران</h2>
-      <p>
+      <div class="sechead__no" data-c="sections.glance.number">بخش ۰۱</div>
+      <h2 data-c="sections.glance.title">یک نگاه: نردبانی که ته آن شلوغ است و نوکش گران</h2>
+      <p data-c="sections.glance.body" data-c-html="1">
         دو توزیع موازی وجود دارد — یکی برای <b>تعداد مشترکین</b> و یکی برای <b>حجم گاز</b>.
         اگر این دو بر هم منطبق بودند، مصرف کاملاً برابر بود. فاصلهٔ میان آن‌ها همان چیزی است
         که این گزارش می‌سنجد.
@@ -99,8 +87,8 @@
       <div class="card">
         <div class="card__head">
           <div>
-            <div class="card__title">سهم چهار گروه مصرف — مشترک در برابر گاز</div>
-            <div class="card__sub">دورهٔ سرد (نیمهٔ اول ۱۴۰۴). دو حلقه، یک واقعیت: گروه کم‌مصرف
+            <div class="card__title" data-c="sections.glance.card1_title">سهم چهار گروه مصرف — مشترک در برابر گاز</div>
+            <div class="card__sub" data-c="sections.glance.card1_sub">دورهٔ سرد (نیمهٔ اول ۱۴۰۴). دو حلقه، یک واقعیت: گروه کم‌مصرف
               اکثریت مطلق مشترکین است اما سهمش از گاز به‌مراتب کمتر.</div>
           </div>
           <div class="card__tools">
@@ -117,8 +105,8 @@
       <div class="card">
         <div class="card__head">
           <div>
-            <div class="card__title">اگر ایران فقط ۱۰۰ مشترک داشت</div>
-            <div class="card__sub">هر مربع یک صدم است. سمت راست مشترکین، سمت چپ گاز.</div>
+            <div class="card__title" data-c="sections.glance.card2_title">اگر ایران فقط ۱۰۰ مشترک داشت</div>
+            <div class="card__sub" data-c="sections.glance.card2_sub">هر مربع یک صدم است. سمت راست مشترکین، سمت چپ گاز.</div>
           </div>
         </div>
         <div class="waffle-pair" id="waffles"></div>
@@ -133,9 +121,9 @@
 <section class="section" id="ladder">
   <div class="wrap">
     <div class="sechead reveal">
-      <div class="sechead__no">بخش ۰۲</div>
-      <h2>نردبان دوازده‌پله‌ای، پله به پله</h2>
-      <p>
+      <div class="sechead__no" data-c="sections.ladder.number">بخش ۰۲</div>
+      <h2 data-c="sections.ladder.title">نردبان دوازده‌پله‌ای، پله به پله</h2>
+      <p data-c="sections.ladder.body" data-c-html="1">
         در دورهٔ سرد هر مشترک بسته به حجم مصرف در یکی از دوازده پله می‌افتد. این نمودار
         پروانه‌ای دو سهم را روبه‌روی هم می‌گذارد: چند درصد مشترکین در آن پله‌اند، و آن پله
         چند درصد گاز کشور را می‌سوزاند.
@@ -146,8 +134,8 @@
       <div class="card">
         <div class="card__head">
           <div>
-            <div class="card__title">پروانهٔ پله‌ها — مشترک در برابر مصرف</div>
-            <div class="card__sub">آبی: سهم تعداد مشترکین · نارنجی: سهم مصرف گاز</div>
+            <div class="card__title" data-c="sections.ladder.card1_title">پروانهٔ پله‌ها — مشترک در برابر مصرف</div>
+            <div class="card__sub" data-c="sections.ladder.card1_sub">آبی: سهم تعداد مشترکین · نارنجی: سهم مصرف گاز</div>
           </div>
           <div class="card__tools">
             <label class="visually-hidden" for="ladderProv">استان</label>
@@ -161,8 +149,8 @@
       <div class="card">
         <div class="card__head">
           <div>
-            <div class="card__title">ضریب شدت مصرف در هر پله</div>
-            <div class="card__sub">هر مشترک این پله چند برابر مشترک متوسط کشور گاز می‌سوزاند.
+            <div class="card__title" data-c="sections.ladder.card2_title">ضریب شدت مصرف در هر پله</div>
+            <div class="card__sub" data-c="sections.ladder.card2_sub">هر مشترک این پله چند برابر مشترک متوسط کشور گاز می‌سوزاند.
               خط‌چین، میانگین کشوری است.</div>
           </div>
         </div>
@@ -175,8 +163,8 @@
       <div class="card">
         <div class="card__head">
           <div>
-            <div class="card__title">نقشهٔ درختی مصرف: کدام پله چقدر از کیک را می‌برد</div>
-            <div class="card__sub">مساحت هر خانه برابر سهم آن پله از کل گاز مصرفی است.</div>
+            <div class="card__title" data-c="sections.ladder.card3_title">نقشهٔ درختی مصرف: کدام پله چقدر از کیک را می‌برد</div>
+            <div class="card__sub" data-c="sections.ladder.card3_sub">مساحت هر خانه برابر سهم آن پله از کل گاز مصرفی است.</div>
           </div>
         </div>
         <div class="chart" id="cTreemap"></div>
@@ -190,9 +178,9 @@
 <section class="section section--alt" id="flow">
   <div class="wrap">
     <div class="sechead reveal">
-      <div class="sechead__no">بخش ۰۳</div>
-      <h2>جریان: از صد مشترک تا صد واحد گاز</h2>
-      <p>
+      <div class="sechead__no" data-c="sections.flow.number">بخش ۰۳</div>
+      <h2 data-c="sections.flow.title">جریان: از صد مشترک تا صد واحد گاز</h2>
+      <p data-c="sections.flow.body" data-c-html="1">
         ستون راست صد مشترک است، ستون چپ صد واحد گاز. پهنای هر نوار در سمت راست
         «چند نفر» و در سمت چپ «چقدر گاز» را نشان می‌دهد. باریک شدن یا پهن شدن نوار
         هنگام عبور از هر گروه، همان نابرابری است — قابل دیدن با چشم.
@@ -201,7 +189,7 @@
     <div class="card reveal">
       <div class="card__head">
         <div>
-          <div class="card__title">نمودار سنکی مصرف</div>
+          <div class="card__title" data-c="sections.flow.card1_title">نمودار سنکی مصرف</div>
           <div class="card__sub" id="sankeySub"></div>
         </div>
         <div class="card__tools">
@@ -223,9 +211,9 @@
 <section class="section" id="inequality">
   <div class="wrap">
     <div class="sechead reveal">
-      <div class="sechead__no">بخش ۰۴</div>
-      <h2>منحنی لورنز: اندازه‌گیری فاصله تا برابری</h2>
-      <p>
+      <div class="sechead__no" data-c="sections.inequality.number">بخش ۰۴</div>
+      <h2 data-c="sections.inequality.title">منحنی لورنز: اندازه‌گیری فاصله تا برابری</h2>
+      <p data-c="sections.inequality.body" data-c-html="1">
         منحنی لورنز ابزار استاندارد سنجش نابرابری است. اگر همهٔ مشترکین دقیقاً یک‌اندازه
         گاز می‌سوزاندند، منحنی روی خط‌چین قطری می‌افتاد. هرچه منحنی بیشتر فرو برود،
         مصرف متمرکزتر است. مساحت میان خط و منحنی همان <b>ضریب جینی</b> است.
@@ -236,8 +224,8 @@
       <div class="card">
         <div class="card__head">
           <div>
-            <div class="card__title">منحنی لورنز مصرف گاز</div>
-            <div class="card__sub">مقایسهٔ استان انتخابی با میانگین کشور</div>
+            <div class="card__title" data-c="sections.inequality.card1_title">منحنی لورنز مصرف گاز</div>
+            <div class="card__sub" data-c="sections.inequality.card1_sub">مقایسهٔ استان انتخابی با میانگین کشور</div>
           </div>
           <div class="card__tools">
             <div class="segmented" role="group" aria-label="انتخاب دوره" id="lorenzHalf">
@@ -261,9 +249,9 @@
 <section class="section section--alt" id="map">
   <div class="wrap">
     <div class="sechead reveal">
-      <div class="sechead__no">بخش ۰۵</div>
-      <h2>نقشهٔ کشور: یک شاخص، سی‌ویک روایت</h2>
-      <p>
+      <div class="sechead__no" data-c="sections.map.number">بخش ۰۵</div>
+      <h2 data-c="sections.map.title">نقشهٔ کشور: یک شاخص، سی‌ویک روایت</h2>
+      <p data-c="sections.map.body" data-c-html="1">
         شاخص را عوض کنید تا ببینید جغرافیای مصرف چطور جابه‌جا می‌شود. روی نقشه
         بچرخید و زوم کنید؛ با کلیک روی هر استان، همان استان در بخش کاوشگر باز می‌شود.
       </p>
@@ -293,9 +281,9 @@
 <section class="section" id="matrix">
   <div class="wrap">
     <div class="sechead reveal">
-      <div class="sechead__no">بخش ۰۶</div>
-      <h2>ماتریس کامل: هر استان، هر پله</h2>
-      <p>
+      <div class="sechead__no" data-c="sections.matrix.number">بخش ۰۶</div>
+      <h2 data-c="sections.matrix.title">ماتریس کامل: هر استان، هر پله</h2>
+      <p data-c="sections.matrix.body" data-c-html="1">
         پله‌ها مثل جدول‌های مبدأ از راست به چپ چیده شده‌اند و استان‌ها از بالا به پایین
         بر اساس سهم گروه کم‌مصرف مرتب‌اند. هرچه رنگ روشن یک ردیف به سمت راست چسبیده
         باشد، مصرف آن استان در پله‌های پایین متمرکز است؛ ردیف‌هایی که روشنی‌شان به سمت
@@ -305,8 +293,8 @@
     </div>
     <div class="card reveal">
       <div class="card__head">
-        <div>
-          <div class="card__title">هیت‌مپ استان × پله — دورهٔ سرد</div>
+      <div>
+          <div class="card__title" data-c="sections.matrix.card1_title">هیت‌مپ استان × پله — دورهٔ سرد</div>
           <div class="card__sub" id="heatSub"></div>
         </div>
         <div class="card__tools">
@@ -325,9 +313,9 @@
 <section class="section section--alt" id="climate">
   <div class="wrap">
     <div class="sechead reveal">
-      <div class="sechead__no">بخش ۰۷</div>
-      <h2>سرما چقدر از ماجرا را توضیح می‌دهد؟</h2>
-      <p>
+      <div class="sechead__no" data-c="sections.climate.number">بخش ۰۷</div>
+      <h2 data-c="sections.climate.title">سرما چقدر از ماجرا را توضیح می‌دهد؟</h2>
+      <p data-c="sections.climate.body" data-c-html="1">
         انتظار طبیعی این است که استان سردتر بیشتر از الگو مصرف کند — و داده این را تأیید
         می‌کند. اما برازش خطی فقط بخشی از تفاوت‌ها را می‌پوشاند. آنچه باقی می‌ماند
         (فاصلهٔ عمودی هر استان تا خط‌چین) سهم عواملی جز دماست: کیفیت ساخت‌وساز، رطوبت،
@@ -337,7 +325,7 @@
     <div class="card reveal">
       <div class="card__head">
         <div>
-          <div class="card__title">دما در برابر مصرف مازاد بر الگو</div>
+          <div class="card__title" data-c="sections.climate.card1_title">دما در برابر مصرف مازاد بر الگو</div>
           <div class="card__sub" id="climateSub"></div>
         </div>
       </div>
@@ -356,9 +344,9 @@
 <section class="section" id="season">
   <div class="wrap">
     <div class="sechead reveal">
-      <div class="sechead__no">بخش ۰۸</div>
-      <h2>دو فصل، دو کشور</h2>
-      <p>
+      <div class="sechead__no" data-c="sections.season.number">بخش ۰۸</div>
+      <h2 data-c="sections.season.title">دو فصل، دو کشور</h2>
+      <p data-c="sections.season.body" data-c-html="1">
         در دورهٔ گرم تعرفه چهار پله دارد و در دورهٔ سرد دوازده پله. چون مرز پله‌ها یکی
         نیست، <b>سهم خام گروه‌ها را نمی‌توان بین دو دوره مقایسه کرد</b>. آنچه قابل مقایسه
         است، <b>ضریب شدت</b> است: نسبتی درون‌دوره‌ای که می‌گوید پرمصرف‌ترین گروه هر دوره
@@ -368,9 +356,9 @@
     </div>
     <div class="card reveal">
       <div class="card__head">
-        <div>
-          <div class="card__title">فاصلهٔ پرمصرف‌ترین گروه تا مشترک متوسط، در دو فصل</div>
-          <div class="card__sub">هر خط یک استان است؛ نقطهٔ آبی دورهٔ گرم و نقطهٔ نارنجی دورهٔ سرد.
+      <div>
+          <div class="card__title" data-c="sections.season.card1_title">فاصلهٔ پرمصرف‌ترین گروه تا مشترک متوسط، در دو فصل</div>
+          <div class="card__sub" data-c="sections.season.card1_sub">هر خط یک استان است؛ نقطهٔ آبی دورهٔ گرم و نقطهٔ نارنجی دورهٔ سرد.
             استان‌ها بر اساس بزرگی این فاصله مرتب شده‌اند.</div>
         </div>
       </div>
@@ -384,9 +372,9 @@
 <section class="section section--alt" id="explorer">
   <div class="wrap">
     <div class="sechead reveal">
-      <div class="sechead__no">بخش ۰۹</div>
-      <h2>کاوشگر استان</h2>
-      <p>یک استان را انتخاب کنید و نیمرخ کامل آن را ببینید — در کنار میانگین کشور.</p>
+      <div class="sechead__no" data-c="sections.explorer.number">بخش ۰۹</div>
+      <h2 data-c="sections.explorer.title">کاوشگر استان</h2>
+      <p data-c="sections.explorer.body">یک استان را انتخاب کنید و نیمرخ کامل آن را ببینید — در کنار میانگین کشور.</p>
     </div>
 
     <div class="card reveal">
@@ -403,11 +391,11 @@
 
       <div class="grid grid--2">
         <div>
-          <div class="card__title" style="margin-bottom:.5rem">نیمرخ استان در برابر کشور</div>
+          <div class="card__title" style="margin-bottom:.5rem" data-c="sections.explorer.card1_title">نیمرخ استان در برابر کشور</div>
           <div class="chart" id="cRadar"></div>
         </div>
         <div>
-          <div class="card__title" style="margin-bottom:.5rem">ترکیب چهار گروه در دو دوره</div>
+          <div class="card__title" style="margin-bottom:.5rem" data-c="sections.explorer.card2_title">ترکیب چهار گروه در دو دوره</div>
           <div class="chart" id="cProvTiers"></div>
         </div>
       </div>
@@ -417,8 +405,8 @@
     <div class="card reveal" style="margin-top:1.15rem">
       <div class="card__head">
         <div>
-          <div class="card__title">مقایسهٔ چند استان</div>
-          <div class="card__sub">تا شش استان را با نگه‌داشتن کلید Ctrl انتخاب کنید.</div>
+          <div class="card__title" data-c="sections.explorer.compare_title">مقایسهٔ چند استان</div>
+          <div class="card__sub" data-c="sections.explorer.compare_sub">تا شش استان را با نگه‌داشتن کلید Ctrl انتخاب کنید.</div>
         </div>
         <div class="card__tools">
           <label class="visually-hidden" for="cmpProv">استان‌ها</label>
@@ -435,9 +423,9 @@
 <section class="section" id="table">
   <div class="wrap">
     <div class="sechead reveal">
-      <div class="sechead__no">بخش ۱۰</div>
-      <h2>داده‌های کامل</h2>
-      <p>روی سرستون‌ها بزنید تا مرتب شود. جست‌وجو نام استان را فیلتر می‌کند.</p>
+      <div class="sechead__no" data-c="sections.table.number">بخش ۱۰</div>
+      <h2 data-c="sections.table.title">داده‌های کامل</h2>
+      <p data-c="sections.table.body">روی سرستون‌ها بزنید تا مرتب شود. جست‌وجو نام استان را فیلتر می‌کند.</p>
     </div>
     <div class="card reveal">
       <div class="card__head">
@@ -452,7 +440,7 @@
           <tbody id="tableBody"></tbody>
         </table>
       </div>
-      <div class="card__sub" style="margin-top:.7rem">
+      <div class="card__sub" style="margin-top:.7rem" data-c="sections.table.footnote" data-c-html="1">
         همهٔ ستون‌ها درصدند مگر جینی و پلهٔ میانه. «مازاد بر الگو» یعنی سهم گازی که
         بالاتر از پلهٔ ۳ سوخته است.
       </div>
@@ -464,9 +452,9 @@
 <section class="section section--alt" id="downloads">
   <div class="wrap">
     <div class="sechead reveal">
-      <div class="sechead__no">بخش ۱۱</div>
-      <h2>دریافت نسخه‌های دیگر</h2>
-      <p>همین تحلیل در قالب‌های آمادهٔ ارائه، چاپ و کار با داده.</p>
+      <div class="sechead__no" data-c="sections.downloads.number">بخش ۱۱</div>
+      <h2 data-c="sections.downloads.title">دریافت نسخه‌های دیگر</h2>
+      <p data-c="sections.downloads.body">همین تحلیل در قالب‌های آمادهٔ ارائه، چاپ و کار با داده.</p>
     </div>
     <div class="dl-grid reveal" id="dlGrid"></div>
   </div>
@@ -476,12 +464,12 @@
 <section class="section" id="method">
   <div class="wrap">
     <div class="sechead reveal">
-      <div class="sechead__no">بخش ۱۲</div>
-      <h2>روش‌شناسی، محدودیت‌ها و منابع</h2>
+      <div class="sechead__no" data-c="sections.method.number">بخش ۱۲</div>
+      <h2 data-c="sections.method.title">روش‌شناسی، محدودیت‌ها و منابع</h2>
     </div>
     <div class="grid grid--2 reveal">
       <div class="card">
-        <div class="prose">
+        <div class="prose" id="methodCol1" data-c="sections.method.col1_html" data-c-html="1">
           <h3>داده از کجا آمده</h3>
           <p>
             چهار جدول تصویری منتشرشده توسط <b>مدیریت گازرسانی — امور تعرفه‌ها و قراردادها</b>ی
@@ -525,7 +513,7 @@
       </div>
 
       <div class="card">
-        <div class="prose">
+        <div class="prose" id="methodCol2" data-c="sections.method.col2_html" data-c-html="1" data-c-append-credits="1">
           <h3>ساخت این صفحه</h3>
           <ul>
             <li>نمودارها با <b>ECharts</b> رندر می‌شوند و کتابخانه به‌صورت محلی در همین
@@ -551,14 +539,15 @@
   <div class="wrap foot__in">
     <img src="assets/img/nigc-logo.svg" alt="">
     <div>
-      <div>تحلیل مصرف گاز خانگی به تفکیک پله — سال ۱۴۰۴</div>
-      <div>داده: مدیریت گازرسانی، امور تعرفه‌ها و قراردادها — شرکت ملی گاز ایران</div>
+      <div id="footerLine1" data-c="meta.footer_line1">تحلیل مصرف گاز خانگی به تفکیک پله — سال ۱۴۰۴</div>
+      <div id="footerLine2" data-c="meta.footer_line2">داده: مدیریت گازرسانی، امور تعرفه‌ها و قراردادها — شرکت ملی گاز ایران</div>
     </div>
     <div style="margin-inline-start:auto" id="footNote"></div>
   </div>
 </footer>
 
 <script src="assets/vendor/echarts.min.js"></script>
+<script src="assets/js/content.js?v=1"></script>
 <script src="assets/js/data.js?v=3"></script>
 <script src="assets/js/util.js?v=3"></script>
 <script src="assets/js/charts.js?v=3"></script>

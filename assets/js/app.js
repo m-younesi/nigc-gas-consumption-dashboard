@@ -368,7 +368,7 @@
   }
 
   /* =================================================================== جدول */
-  var COLS = [
+  var DEFAULT_COLS = [
     { k: "province", t: "استان", d: null },
     { k: "h1_over_pattern", t: "مازاد بر الگو", d: 1 },
     { k: "h1_tail_cons", t: "سهم پرمصرف‌ها", d: 1 },
@@ -382,6 +382,12 @@
     { k: "temp", t: "میانگین دما", d: 1 },
     { k: "climate_residual", t: "انحراف اقلیمی", d: 1 }
   ];
+  var CONTENT = window.NIGC_CONTENT || {};
+  var COLS = (CONTENT.table_columns || []).length
+    ? CONTENT.table_columns.map(function (c) {
+        return { k: c.key, t: c.label, d: c.decimals };
+      })
+    : DEFAULT_COLS;
 
   function pick(row, key) {
     return key.split(".").reduce(function (o, k) { return o == null ? null : o[k]; }, row);
@@ -459,7 +465,7 @@
 
   /* نام فایل روی سرور باید ASCII باشد — گیت‌هاب‌پیجز مسیرهای غیرلاتین را
      ۴۰۴ می‌دهد. نام فارسی از طریق صفت download روی فایل ذخیره‌شده می‌نشیند. */
-  var DOWNLOADS = [
+  var DEFAULT_DOWNLOADS = [
     { f: "downloads/gas-report-1404.pdf", as: "گزارش-تحلیلی-مصرف-گاز-خانگی-۱۴۰۴.pdf",
       t: "گزارش کامل PDF", size: "۱۱ صفحه · ۱٫۱ مگابایت",
       d: "روایت تحلیلی همراه با همهٔ نمودارها و جدول‌های پیوست، آمادهٔ چاپ.", i: "pdf",
@@ -482,6 +488,11 @@
       d: "همهٔ پله‌ها و شاخص‌ها، برای تحلیل مجدد در هر ابزاری.", i: "csv",
       tone: "var(--c-subs)" }
   ];
+  var DOWNLOADS = (CONTENT.downloads || []).length
+    ? CONTENT.downloads.map(function (d) {
+        return { f: d.file, as: d.download_name, t: d.title, size: d.size, d: d.description, i: d.icon, tone: d.tone };
+      })
+    : DEFAULT_DOWNLOADS;
 
   function buildDownloads() {
     var host = $("#dlGrid");
