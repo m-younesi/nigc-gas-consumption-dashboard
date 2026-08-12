@@ -457,23 +457,30 @@
     csv: "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Zm0 0v6h6M8 13h8M8 17h5"
   };
 
+  /* نام فایل روی سرور باید ASCII باشد — گیت‌هاب‌پیجز مسیرهای غیرلاتین را
+     ۴۰۴ می‌دهد. نام فارسی از طریق صفت download روی فایل ذخیره‌شده می‌نشیند. */
   var DOWNLOADS = [
-    { f: "downloads/گزارش-تحلیلی-مصرف-گاز-خانگی-۱۴۰۴.pdf", t: "گزارش کامل PDF",
-      d: "روایت تحلیلی همراه با همهٔ نمودارها، آمادهٔ چاپ و پیوست اداری.", i: "pdf",
+    { f: "downloads/gas-report-1404.pdf", as: "گزارش-تحلیلی-مصرف-گاز-خانگی-۱۴۰۴.pdf",
+      t: "گزارش کامل PDF", size: "۱۱ صفحه · ۱٫۱ مگابایت",
+      d: "روایت تحلیلی همراه با همهٔ نمودارها و جدول‌های پیوست، آمادهٔ چاپ.", i: "pdf",
       tone: "var(--critical)" },
-    { f: "downloads/ارائه-مصرف-گاز-خانگی-۱۴۰۴.pptx", t: "ارائهٔ پاورپوینت",
-      d: "اسلایدهای جلسه با نمودارهای رندرشده و نکات کلیدی هر بخش.", i: "ppt",
+    { f: "downloads/gas-presentation-1404.pptx", as: "ارائه-مصرف-گاز-خانگی-۱۴۰۴.pptx",
+      t: "ارائهٔ پاورپوینت", size: "۱۲ اسلاید · ۱٫۲ مگابایت",
+      d: "اسلایدهای جلسه با نمودارهای رندرشده و نکتهٔ کلیدی هر بخش.", i: "ppt",
       tone: "var(--serious)" },
-    { f: "downloads/داده-و-تحلیل-مصرف-گاز-خانگی-۱۴۰۴.xlsx", t: "کارپوشهٔ اکسل",
-      d: "همهٔ جدول‌های خام و شاخص‌های محاسبه‌شده، با نمودار و قالب‌بندی شرطی.", i: "xls",
+    { f: "downloads/gas-data-analysis-1404.xlsx", as: "داده-و-تحلیل-مصرف-گاز-خانگی-۱۴۰۴.xlsx",
+      t: "کارپوشهٔ اکسل", size: "۷ برگه · ۲۹ کیلوبایت",
+      d: "جدول‌های خام و شاخص‌های محاسبه‌شده، با نمودار و قالب‌بندی شرطی.", i: "xls",
       tone: "var(--ok)" },
-    { f: "downloads/اینفوگرافیک-مصرف-گاز-خانگی-۱۴۰۴.png", t: "پوستر اینفوگرافیک",
-      d: "نسخهٔ تصویری تک‌برگ برای اشتراک‌گذاری و نمایش.", i: "img",
-      tone: "var(--c-gas)" },
-    { f: "poster.html", t: "اینفوگرافیک تعاملی", d: "همان پوستر، در مرورگر.", i: "img",
-      tone: "var(--g3)" },
-    { f: "downloads/داده-خام-مصرف-گاز-خانگی-۱۴۰۴.csv", t: "داده خام CSV",
-      d: "برای تحلیل مجدد در هر ابزاری.", i: "csv", tone: "var(--c-subs)" }
+    { f: "downloads/gas-infographic-1404.png", as: "اینفوگرافیک-مصرف-گاز-خانگی-۱۴۰۴.png",
+      t: "پوستر اینفوگرافیک", size: "۳۵۸۴ پیکسل · ۵٫۴ مگابایت",
+      d: "نسخهٔ تصویری تک‌برگ، با کیفیت چاپ.", i: "img", tone: "var(--c-gas)" },
+    { f: "poster.html", t: "اینفوگرافیک تعاملی", size: "در مرورگر",
+      d: "همان پوستر، بدون دانلود.", i: "img", tone: "var(--g3)" },
+    { f: "downloads/gas-raw-data-1404.csv", as: "داده-خام-مصرف-گاز-خانگی-۱۴۰۴.csv",
+      t: "دادهٔ خام CSV", size: "۳۲ ردیف · ۴۲ ستون",
+      d: "همهٔ پله‌ها و شاخص‌ها، برای تحلیل مجدد در هر ابزاری.", i: "csv",
+      tone: "var(--c-subs)" }
   ];
 
   function buildDownloads() {
@@ -481,11 +488,14 @@
     DOWNLOADS.forEach(function (d) {
       var svg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" ' +
         'stroke-linecap="round" stroke-linejoin="round"><path d="' + ICONS[d.i] + '"/></svg>';
-      host.appendChild(el("a", { class: "dl", href: d.f, style: "--tone:" + d.tone }, [
+      host.appendChild(el("a", {
+        class: "dl", href: d.f, download: d.as || null, style: "--tone:" + d.tone
+      }, [
         el("div", { class: "dl__ico", html: svg }),
         el("div", {}, [
           el("div", { class: "dl__t", text: d.t }),
-          el("div", { class: "dl__d", text: d.d })
+          el("div", { class: "dl__d", text: d.d }),
+          el("div", { class: "dl__s", text: d.size })
         ])
       ]));
     });
