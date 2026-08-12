@@ -5,6 +5,7 @@
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
+const os = require("os");
 const { spawn } = require("child_process");
 const WebSocket = require("ws");
 
@@ -26,7 +27,7 @@ const getJSON = p => new Promise((res, rej) => {
 });
 
 (async () => {
-  const profile = path.join(process.env.TEMP || ".", "nigc-pdf-profile");
+  const profile = path.join(os.tmpdir(), "nigc-pdf-profile");
   const chrome = spawn(CHROME, [
     "--headless=new", `--remote-debugging-port=${PORT}`, `--user-data-dir=${profile}`,
     "--no-first-run", "--no-default-browser-check", "--disable-gpu",

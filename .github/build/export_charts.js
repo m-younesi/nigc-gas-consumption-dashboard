@@ -7,6 +7,7 @@
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
+const os = require("os");
 const { spawn } = require("child_process");
 const WebSocket = require("ws");
 
@@ -43,7 +44,7 @@ const getJSON = p => new Promise((res, rej) => {
   fs.mkdirSync(outDir, { recursive: true });
   const ch = spawn(CHROME, [
     "--headless=new", `--remote-debugging-port=${PORT}`,
-    `--user-data-dir=${path.join(process.env.TEMP, "nigc-charts")}`,
+    `--user-data-dir=${path.join(os.tmpdir(), "nigc-charts")}`,
     "--no-first-run", "--disable-gpu", "--hide-scrollbars",
     "--window-size=1600,900", "about:blank"
   ], { stdio: "ignore" });
