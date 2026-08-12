@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>پنل مدیریت — مصرف گاز خانگی ۱۴۰۴</title>
+<link rel="icon" href="assets/img/nigc-logo.svg">
+<link rel="preload" href="assets/fonts/Estedad-Bold.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/Estedad-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face { font-family: "Estedad"; src: url("assets/fonts/Estedad-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Estedad"; src: url("assets/fonts/Estedad-Medium.woff2") format("woff2"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "Estedad"; src: url("assets/fonts/Estedad-SemiBold.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+@font-face { font-family: "Estedad"; src: url("assets/fonts/Estedad-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Estedad"; src: url("assets/fonts/Estedad-ExtraBold.woff2") format("woff2"); font-weight: 800; font-display: swap; }
+
+:root {
+  color-scheme: dark;
+  --plane: #0a0e14; --surface-1: #141922; --surface-2: #1b2130; --surface-3: #232a3a;
+  --border: rgba(255,255,255,.09); --border-str: rgba(255,255,255,.18);
+  --ink: #f2f5f8; --ink-2: #a8b3c2; --ink-muted: #6f7d8f;
+  --accent: #3987e5; --accent-2: #d95926;
+  --ok: #0ca30c; --warn: #fab219; --critical: #d03b3b;
+  --radius: 10px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--plane); color: var(--ink);
+  font-family: "Estedad", "Segoe UI", Tahoma, sans-serif;
+  font-size: 14px; line-height: 1.7; min-height: 100vh;
+}
+a { color: var(--accent); }
+h1, h2, h3 { font-weight: 700; margin: 0 0 .5em; }
+
+/* ---------- صفحهٔ ورود ---------- */
+#loginScreen {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  padding: 1.5rem;
+}
+.login-card {
+  width: 100%; max-width: 360px; background: var(--surface-1);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 2rem; text-align: center;
+}
+.login-card img { width: 48px; height: 48px; margin-bottom: .75rem; }
+.login-card input[type="password"] {
+  width: 100%; margin-top: 1.25rem; padding: .65rem .8rem; border-radius: 8px;
+  border: 1px solid var(--border-str); background: var(--surface-2); color: var(--ink);
+  font-family: inherit; font-size: 14px;
+}
+.login-card button {
+  width: 100%; margin-top: .9rem; padding: .65rem .8rem; border-radius: 8px; border: none;
+  background: var(--accent); color: #fff; font-family: inherit; font-size: 14px; font-weight: 600;
+  cursor: pointer;
+}
+.login-card button:hover { filter: brightness(1.08); }
+.login-card button:disabled { opacity: .6; cursor: default; }
+#loginError { color: var(--critical); margin-top: .8rem; min-height: 1.2em; font-size: 13px; }
+
+/* ---------- برنامهٔ اصلی ---------- */
+#appScreen { display: none; min-height: 100vh; }
+.topbar {
+  position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 1rem;
+  padding: .7rem 1.1rem; background: var(--surface-1); border-bottom: 1px solid var(--border);
+}
+.topbar h1 { font-size: 15px; margin: 0; flex: none; }
+.topbar .spacer { flex: 1; }
+.topbar .status { font-size: 13px; color: var(--ink-2); min-height: 1.2em; }
+.btn {
+  padding: .5rem 1rem; border-radius: 8px; border: 1px solid var(--border-str);
+  background: var(--surface-2); color: var(--ink); font-family: inherit; font-size: 13px;
+  cursor: pointer; font-weight: 600;
+}
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn:disabled { opacity: .55; cursor: default; }
+
+.layout { display: flex; align-items: flex-start; min-height: calc(100vh - 52px); }
+.tabs {
+  flex: none; width: 190px; padding: 1rem .6rem; position: sticky; top: 52px;
+  height: calc(100vh - 52px); overflow-y: auto; border-inline-end: 1px solid var(--border);
+}
+.tabs button {
+  display: block; width: 100%; text-align: start; padding: .55rem .7rem; margin-bottom: .25rem;
+  border-radius: 8px; border: none; background: transparent; color: var(--ink-2);
+  font-family: inherit; font-size: 13px; cursor: pointer;
+}
+.tabs button:hover { background: var(--surface-2); color: var(--ink); }
+.tabs button.active { background: var(--surface-3); color: var(--ink); font-weight: 700; }
+
+.panels { flex: 1; min-width: 0; padding: 1.4rem 1.6rem 4rem; }
+.panel { display: none; }
+.panel.active { display: block; }
+
+.field { margin-bottom: 1rem; }
+.field label { display: block; font-size: 12.5px; color: var(--ink-2); margin-bottom: .3rem; }
+.field input[type="text"], .field input[type="number"], .field textarea, .field select {
+  width: 100%; padding: .55rem .7rem; border-radius: 8px; border: 1px solid var(--border-str);
+  background: var(--surface-1); color: var(--ink); font-family: inherit; font-size: 13.5px;
+}
+.field textarea { min-height: 4.5em; resize: vertical; }
+.field.inline { display: flex; align-items: center; gap: .5rem; }
+.field.inline label { margin: 0; }
+
+.card {
+  background: var(--surface-1); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.1rem 1.2rem; margin-bottom: 1.1rem;
+}
+.card h3 { font-size: 14px; display: flex; align-items: center; gap: .6rem; }
+.card h3 .tag { font-size: 11px; font-weight: 600; color: var(--ink-muted); background: var(--surface-3);
+  border-radius: 5px; padding: .1rem .5rem; }
+
+.grid2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: .8rem 1rem; }
+.grid3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .7rem .9rem; }
+
+.color-field { display: flex; align-items: center; gap: .5rem; background: var(--surface-2);
+  border: 1px solid var(--border-str); border-radius: 8px; padding: .35rem .5rem; }
+.color-field input[type="color"] { width: 30px; height: 30px; border: none; background: none; padding: 0; cursor: pointer; }
+.color-field input[type="text"] { border: none; background: none; padding: .2rem; font-size: 12.5px; flex: 1; min-width: 0; }
+.color-field .var-name { font-size: 11px; color: var(--ink-muted); font-family: monospace; width: 90px; flex: none; }
+
+.theme-mode-title { font-size: 13px; font-weight: 700; margin: 1.2rem 0 .6rem; color: var(--accent); }
+.theme-mode-title:first-child { margin-top: 0; }
+
+.list-row { border: 1px solid var(--border); border-radius: 8px; padding: .9rem 1rem; margin-bottom: .7rem; position: relative; background: var(--surface-1); }
+.list-row .remove-btn { position: absolute; top: .5rem; left: .6rem; background: none; border: none; color: var(--critical);
+  cursor: pointer; font-size: 12px; }
+.add-row-btn { margin-top: .3rem; }
+
+table.datagrid { border-collapse: collapse; width: max-content; min-width: 100%; font-size: 12px; }
+table.datagrid th, table.datagrid td { border: 1px solid var(--border); padding: .25rem .35rem; text-align: center; }
+table.datagrid th { background: var(--surface-2); position: sticky; top: 0; font-weight: 600; white-space: nowrap; }
+table.datagrid td:first-child, table.datagrid th:first-child {
+  position: sticky; right: 0; background: var(--surface-2); z-index: 2; text-align: start; white-space: nowrap; min-width: 110px;
+}
+table.datagrid input { width: 58px; padding: .2rem; border-radius: 4px; border: 1px solid var(--border-str);
+  background: var(--surface-1); color: var(--ink); font-family: inherit; font-size: 12px; text-align: center; }
+.datagrid-wrap { overflow: auto; max-height: 70vh; border: 1px solid var(--border); border-radius: 8px; }
+.datagrid-note { font-size: 12px; color: var(--ink-muted); margin-bottom: .7rem; }
+
+.jsonarea { width: 100%; min-height: 45vh; font-family: "Cascadia Code", Consolas, monospace; font-size: 12.5px;
+  direction: ltr; text-align: left; background: var(--surface-1); color: var(--ink);
+  border: 1px solid var(--border-str); border-radius: 8px; padding: .8rem; }
+.hint { font-size: 12.5px; color: var(--ink-muted); margin-bottom: .8rem; }
+.section-visible-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: .8rem; }
+</style>
+</head>
+<body>
+
+<div id="loginScreen">
+  <div class="login-card">
+    <img src="assets/img/nigc-logo.svg" alt="">
+    <h2>ورود به پنل مدیریت</h2>
+    <p style="color:var(--ink-2); font-size:13px; margin:0">برای ویرایش محتوای داشبورد، رمز عبور را وارد کنید.</p>
+    <input type="password" id="passwordInput" placeholder="رمز عبور" autocomplete="current-password">
+    <button type="button" id="loginBtn">ورود</button>
+    <div id="loginError"></div>
+  </div>
+</div>
+
+<div id="appScreen">
+  <header class="topbar">
+    <h1>پنل مدیریت — مصرف گاز خانگی ۱۴۰۴</h1>
+    <span class="status" id="statusMsg"></span>
+    <span class="spacer"></span>
+    <button class="btn" type="button" id="reloadBtn">بازخوانی از گیت‌هاب</button>
+    <button class="btn primary" type="button" id="saveBtn">ذخیره و انتشار</button>
+    <button class="btn" type="button" id="logoutBtn">خروج</button>
+  </header>
+  <div class="layout">
+    <nav class="tabs" id="tabButtons"></nav>
+    <div class="panels" id="panels"></div>
+  </div>
+</div>
+
+<script src="assets/js/admin.js?v=1"></script>
+</body>
+</html>
