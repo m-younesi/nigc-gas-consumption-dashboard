@@ -37,7 +37,7 @@
     function ring(values, center, title, total) {
       return {
         type: "pie",
-        radius: ["46%", "68%"],
+        radius: ["40%", "58%"],
         center: center,
         avoidLabelOverlap: true,
         startAngle: 90,
@@ -60,6 +60,7 @@
     var isNarrow = dom.clientWidth < 620;
     var c1 = isNarrow ? ["50%", "27%"] : ["76%", "52%"];
     var c2 = isNarrow ? ["50%", "76%"] : ["26%", "52%"];
+    if (!isNarrow) { c1 = ["68%", "50%"]; c2 = ["32%", "50%"]; }
 
     return Object.assign(U.baseOption(), {
       tooltip: Object.assign(U.baseOption().tooltip, {
