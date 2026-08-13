@@ -314,6 +314,7 @@
       { id: 'hero', label: 'بخش قهرمان', build: buildHeroPanel },
       { id: 'nav', label: 'نوار بالا و بخش‌ها', build: buildNavPanel },
       { id: 'sections', label: 'متن بخش‌ها', build: buildSectionsPanel },
+      { id: 'analysis', label: 'تحلیل و راهکار', build: buildAnalysisPanel },
       { id: 'theme', label: 'رنگ‌ها (روشن/تیره)', build: buildThemePanel },
       { id: 'downloads', label: 'دانلودها', build: buildDownloadsPanel },
       { id: 'outputs', label: 'محتوای فایل‌های خروجی', build: buildOutputsPanel },
@@ -591,6 +592,239 @@
     });
     card.appendChild(addBtn);
     panel.appendChild(card);
+  }
+
+  /* ---------------- تحلیل، مقایسهٔ جهانی و راهکار ---------------- */
+
+  /* سازندهٔ عمومی فهرست تکرارشونده: هر ردیف چند فیلد متنی/عددی دارد،
+     با دکمهٔ حذف و افزودن. برای نکته‌ها، راهکارها و ردیف‌های مقایسه. */
+  function buildRepeatList(host, opts) {
+    var arr = opts.array;
+    var list = document.createElement('div');
+    host.appendChild(list);
+
+    function render() {
+      list.innerHTML = '';
+      arr.forEach(function (item, index) {
+        var row = document.createElement('div');
+        row.className = 'list-row';
+
+        var rm = document.createElement('button');
+        rm.type = 'button';
+        rm.className = 'remove-btn';
+        rm.textContent = 'حذف ✕';
+        rm.addEventListener('click', function () {
+          collectAllPanels();
+          arr.splice(index, 1);
+          render();
+        });
+        row.appendChild(rm);
+
+        var grid = document.createElement('div');
+        grid.className = 'grid2';
+        opts.fields.forEach(function (f) {
+          var path = opts.path + '.' + index + '.' + f.key;
+          var field = f.type === 'number'
+            ? makeNumberField(f.label, path, item[f.key])
+            : makeTextField(f.label, path, item[f.key], !!f.long);
+          if (f.long) field.style.gridColumn = '1 / -1';
+          grid.appendChild(field);
+        });
+        row.appendChild(grid);
+        list.appendChild(row);
+      });
+    }
+    render();
+
+    var add = document.createElement('button');
+    add.type = 'button';
+    add.className = 'btn add-row-btn';
+    add.textContent = opts.addLabel;
+    add.addEventListener('click', function () {
+      collectAllPanels();
+      var blank = {};
+      opts.fields.forEach(function (f) { blank[f.key] = f.type === 'number' ? null : ''; });
+      arr.push(blank);
+      render();
+    });
+    host.appendChild(add);
+  }
+
+  function analysisCard(panel, title) {
+    var card = document.createElement('div');
+    card.className = 'card';
+    var h3 = document.createElement('h3');
+    h3.textContent = title;
+    card.appendChild(h3);
+    panel.appendChild(card);
+    return card;
+  }
+
+  var NOTE_FIELDS = [
+    { key: 'title', label: 'عنوان نکته' },
+    { key: 'body', label: 'متن', long: true }
+  ];
+
+  function buildAnalysisPanel(panel) {
+    var A = state.content.analysis;
+    if (!A) {
+      var warn = document.createElement('div');
+      warn.className = 'hint';
+      warn.textContent = 'بلوک analysis در content.json نیست.';
+      panel.appendChild(warn);
+      return;
+    }
+
+    var hint = document.createElement('div');
+    hint.className = 'hint';
+    hint.textContent = 'این متن‌ها هم در سایت، هم در گزارش PDF و هم در پاورپوینت '
+      + 'به کار می‌روند. بعد از ذخیره، فایل‌های دانلودی خودکار بازسازی می‌شوند.';
+    panel.appendChild(hint);
+
+    /* ---- تفسیر ---- */
+    if (A.interpretation) {
+      var c1 = analysisCard(panel, 'تفسیر داده‌ها');
+      c1.appendChild(makeCheckboxField('این بخش نمایش داده شود',
+        'content.analysis.interpretation.visible', A.interpretation.visible !== false));
+      var g1 = document.createElement('div');
+      g1.className = 'grid2';
+      g1.appendChild(makeTextField('شمارهٔ بخش',
+        'content.analysis.interpretation.number', A.interpretation.number));
+      g1.appendChild(makeTextField('عنوان',
+        'content.analysis.interpretation.title', A.interpretation.title));
+      c1.appendChild(g1);
+      c1.appendChild(makeTextField('متن معرفی',
+        'content.analysis.interpretation.body', A.interpretation.body, true));
+      var sub1 = document.createElement('div');
+      sub1.className = 'theme-mode-title';
+      sub1.textContent = 'نکته‌ها';
+      c1.appendChild(sub1);
+      A.interpretation.points = A.interpretation.points || [];
+      buildRepeatList(c1, {
+        array: A.interpretation.points,
+        path: 'content.analysis.interpretation.points',
+        fields: NOTE_FIELDS,
+        addLabel: '+ افزودن نکته'
+      });
+    }
+
+    /* ---- مقایسهٔ بین‌المللی ---- */
+    if (A.international) {
+      var I = A.international;
+      var c2 = analysisCard(panel, 'مقایسهٔ بین‌المللی');
+      c2.appendChild(makeCheckboxField('این بخش نمایش داده شود',
+        'content.analysis.international.visible', I.visible !== false));
+      var g2 = document.createElement('div');
+      g2.className = 'grid2';
+      g2.appendChild(makeTextField('شمارهٔ بخش',
+        'content.analysis.international.number', I.number));
+      g2.appendChild(makeTextField('عنوان',
+        'content.analysis.international.title', I.title));
+      g2.appendChild(makeTextField('کشوری که برجسته شود',
+        'content.analysis.international.highlight_country', I.highlight_country));
+      c2.appendChild(g2);
+      c2.appendChild(makeTextField('متن معرفی',
+        'content.analysis.international.body', I.body, true));
+
+      var g3 = document.createElement('div');
+      g3.className = 'grid2';
+      g3.appendChild(makeTextField('عنوان نمودار ۱',
+        'content.analysis.international.chart1_title', I.chart1_title));
+      g3.appendChild(makeTextField('واحد نمودار ۱',
+        'content.analysis.international.chart1_unit', I.chart1_unit));
+      g3.appendChild(makeTextField('عنوان نمودار ۲',
+        'content.analysis.international.chart2_title', I.chart2_title));
+      g3.appendChild(makeTextField('واحد نمودار ۲',
+        'content.analysis.international.chart2_unit', I.chart2_unit));
+      c2.appendChild(g3);
+      c2.appendChild(makeTextField('یادداشت منبع (زیر نمودارها)',
+        'content.analysis.international.source_note', I.source_note, true));
+
+      var s2a = document.createElement('div');
+      s2a.className = 'theme-mode-title';
+      s2a.textContent = 'دادهٔ نمودار ۱ — مصرف سرانه';
+      c2.appendChild(s2a);
+      I.per_capita = I.per_capita || [];
+      buildRepeatList(c2, {
+        array: I.per_capita,
+        path: 'content.analysis.international.per_capita',
+        fields: [{ key: 'country', label: 'کشور' },
+                 { key: 'value', label: 'مقدار', type: 'number' }],
+        addLabel: '+ افزودن کشور'
+      });
+
+      var s2b = document.createElement('div');
+      s2b.className = 'theme-mode-title';
+      s2b.textContent = 'دادهٔ نمودار ۲ — یارانه به درصد تولید ناخالص';
+      c2.appendChild(s2b);
+      I.subsidy_gdp = I.subsidy_gdp || [];
+      buildRepeatList(c2, {
+        array: I.subsidy_gdp,
+        path: 'content.analysis.international.subsidy_gdp',
+        fields: [{ key: 'country', label: 'کشور' },
+                 { key: 'value', label: 'مقدار', type: 'number' }],
+        addLabel: '+ افزودن کشور'
+      });
+
+      var s2c = document.createElement('div');
+      s2c.className = 'theme-mode-title';
+      s2c.textContent = 'نکته‌های مقایسه';
+      c2.appendChild(s2c);
+      I.points = I.points || [];
+      buildRepeatList(c2, {
+        array: I.points,
+        path: 'content.analysis.international.points',
+        fields: NOTE_FIELDS,
+        addLabel: '+ افزودن نکته'
+      });
+    }
+
+    /* ---- مسئله و راهکار ---- */
+    if (A.solutions) {
+      var S = A.solutions;
+      var c3 = analysisCard(panel, 'مسئله، راهکار و نتیجه‌گیری');
+      c3.appendChild(makeCheckboxField('این بخش نمایش داده شود',
+        'content.analysis.solutions.visible', S.visible !== false));
+      var g4 = document.createElement('div');
+      g4.className = 'grid2';
+      g4.appendChild(makeTextField('شمارهٔ بخش',
+        'content.analysis.solutions.number', S.number));
+      g4.appendChild(makeTextField('عنوان بخش',
+        'content.analysis.solutions.title', S.title));
+      g4.appendChild(makeTextField('عنوان «تعریف مسئله»',
+        'content.analysis.solutions.problem_title', S.problem_title));
+      g4.appendChild(makeTextField('عنوان فهرست راهکارها',
+        'content.analysis.solutions.items_title', S.items_title));
+      c3.appendChild(g4);
+      c3.appendChild(makeTextField('متن تعریف مسئله',
+        'content.analysis.solutions.problem_body', S.problem_body, true));
+
+      var s3 = document.createElement('div');
+      s3.className = 'theme-mode-title';
+      s3.textContent = 'راهکارها';
+      c3.appendChild(s3);
+      S.items = S.items || [];
+      buildRepeatList(c3, {
+        array: S.items,
+        path: 'content.analysis.solutions.items',
+        fields: [
+          { key: 'title', label: 'عنوان راهکار' },
+          { key: 'effort', label: 'افق زمانی (مثلاً کوتاه‌مدت)' },
+          { key: 'impact', label: 'اثر (بالا / متوسط / کم)' },
+          { key: 'body', label: 'شرح', long: true }
+        ],
+        addLabel: '+ افزودن راهکار'
+      });
+
+      var s4 = document.createElement('div');
+      s4.className = 'theme-mode-title';
+      s4.textContent = 'نتیجه‌گیری';
+      c3.appendChild(s4);
+      c3.appendChild(makeTextField('عنوان نتیجه‌گیری',
+        'content.analysis.solutions.conclusion_title', S.conclusion_title));
+      c3.appendChild(makeTextField('متن نتیجه‌گیری',
+        'content.analysis.solutions.conclusion_body', S.conclusion_body, true));
+    }
   }
 
   /* ---------------- محتوای فایل‌های خروجی (PDF / پوستر / آفیس) --------------- */

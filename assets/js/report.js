@@ -236,6 +236,22 @@
     mount("rClimate", shrink(CHARTS.climateScatter(
       document.getElementById("rClimate"), {}), s));
 
+    // مقایسهٔ بین‌المللی: داده از content.json می‌آید، پس ممکن است خالی باشد
+    var intl = (window.NIGC_CONTENT && window.NIGC_CONTENT.analysis
+                && window.NIGC_CONTENT.analysis.international) || {};
+    if (document.getElementById("rBench1")) {
+      mount("rBench1", shrink(CHARTS.benchmarkChart(
+        document.getElementById("rBench1"),
+        { rows: intl.per_capita || [], unit: intl.chart1_unit || "",
+          highlight: intl.highlight_country, decimals: 0 }), s));
+    }
+    if (document.getElementById("rBench2")) {
+      mount("rBench2", shrink(CHARTS.benchmarkChart(
+        document.getElementById("rBench2"),
+        { rows: intl.subsidy_gdp || [], unit: intl.chart2_unit || "",
+          highlight: intl.highlight_country, decimals: 1 }), s));
+    }
+
     var mapOpt = CHARTS.iranMap(document.getElementById("rMap"), { metric: "over_pattern" });
     mapOpt.series[0].roam = false;
     mapOpt.series[0].zoom = 1.2;

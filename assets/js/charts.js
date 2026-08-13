@@ -37,7 +37,7 @@
     function ring(values, center, title, total) {
       return {
         type: "pie",
-        radius: ["40%", "58%"],
+        radius: ["26%", "40%"],
         center: center,
         avoidLabelOverlap: true,
         startAngle: 90,
@@ -58,9 +58,8 @@
     }
 
     var isNarrow = dom.clientWidth < 620;
-    var c1 = isNarrow ? ["50%", "27%"] : ["76%", "52%"];
-    var c2 = isNarrow ? ["50%", "76%"] : ["26%", "52%"];
-    if (!isNarrow) { c1 = ["68%", "50%"]; c2 = ["32%", "50%"]; }
+    var c1 = isNarrow ? ["50%", "26%"] : ["74%", "50%"];
+    var c2 = isNarrow ? ["50%", "77%"] : ["26%", "50%"];
 
     return Object.assign(U.baseOption(), {
       tooltip: Object.assign(U.baseOption().tooltip, {
@@ -894,8 +893,67 @@
     });
   }
 
+  /* ======================================================================
+     مقایسهٔ بین‌المللی - میلهٔ افقی، ایران برجسته
+     داده از content.json می‌آید نه از dataset، چون سنجهٔ مرجع است نه
+     خروجی محاسبات ما؛ و باید از پنل مدیریت قابل ویرایش باشد.
+     ====================================================================== */
+  function benchmarkChart(dom, opts) {
+    var p = U.palette();
+    var o = opts || {};
+    var rows = (o.rows || []).slice().filter(function (r) {
+      return r && r.country && r.value != null && r.value !== "";
+    });
+    // بزرگ‌ترین بالا بنشیند؛ محور y در echarts از پایین می‌چیند
+    rows.sort(function (a, b) { return Number(a.value) - Number(b.value); });
+
+    var highlight = o.highlight || "ایران";
+    var unit = o.unit || "";
+    var decimals = o.decimals == null ? 0 : o.decimals;
+
+    return Object.assign(U.baseOption(), {
+      // جا برای برچسب عددی که بیرون انتهای میله می‌نشیند؛ با ۱۶ پیکسل،
+      // بلندترین میله برچسبش را از لبه بیرون می‌انداخت.
+      grid: { top: 14, bottom: 26, right: 52, left: 16, containLabel: true },
+      tooltip: Object.assign(U.baseOption().tooltip, {
+        trigger: "axis", axisPointer: { type: "shadow" },
+        formatter: function (ps) {
+          var s = ps[0];
+          return "<b>" + s.axisValue + "</b><br>" +
+                 U.faNum(s.value, decimals) + " " + unit;
+        }
+      }),
+      xAxis: U.axis({ type: "value", name: unit, nameLocation: "middle", nameGap: 26,
+        axisLabel: { color: p.muted, fontSize: 11,
+          formatter: function (v) { return U.faNum(v, 0); } } }),
+      yAxis: U.axis({ type: "category",
+        data: rows.map(function (r) { return r.country; }),
+        axisLabel: { color: p.ink2, fontSize: 12, fontWeight: 600 } }),
+      series: [{
+        type: "bar", barWidth: "62%",
+        data: rows.map(function (r) {
+          var isHi = r.country === highlight;
+          return {
+            value: Number(r.value),
+            itemStyle: {
+              color: isHi ? p.gas : p.subs,
+              opacity: isHi ? 1 : 0.45,
+              borderRadius: [0, 4, 4, 0]
+            }
+          };
+        }),
+        label: {
+          show: true, position: "right", color: p.ink2, fontSize: 10.5,
+          fontFamily: "Estedad, sans-serif",
+          formatter: function (x) { return U.faNum(x.value, decimals); }
+        }
+      }]
+    });
+  }
+
   global.CHARTS = {
     donutPair: donutPair,
+    benchmarkChart: benchmarkChart,
     tierButterfly: tierButterfly,
     intensityChart: intensityChart,
     lorenzChart: lorenzChart,

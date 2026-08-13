@@ -326,6 +326,102 @@ def build_pptx():
                     fa(r["value"]) + "٪", size=12, color=INK2, align=PP_ALIGN.LEFT)
 
     # ------------------------------------------------- روش‌شناسی
+    # ------------------------------------------------- تفسیر، مقایسه، راهکار
+    # همان متنی که سایت و گزارش PDF نشان می‌دهند، از بلوک analysis؛ اگر
+    # بخشی در پنل خاموش شده باشد، اسلایدش هم ساخته نمی‌شود.
+    ANALYSIS = CONTENT.get("analysis") or {}
+
+    def _points_text(points, limit=4):
+        out = []
+        for pt in (points or [])[:limit]:
+            title = (pt.get("title") or "").strip()
+            body = (pt.get("body") or "").strip()
+            if not title and not body:
+                continue
+            out.append("%s\n%s" % (title, body) if title else body)
+        return "\n\n".join(out)
+
+    interp = ANALYSIS.get("interpretation") or {}
+    if interp and interp.get("visible") is not False:
+        s = prs.slides.add_slide(blank)
+        bg(s)
+        slide_header(s, "تفسیر", interp.get("title") or "این ارقام یعنی چه؟")
+        rect(s, Inches(0.62), Inches(1.55), Inches(12.1), Inches(1.15), SURF)
+        textbox(s, Inches(0.87), Inches(1.7), Inches(11.6), Inches(0.9),
+                interp.get("body") or "", size=12, color=INK2)
+        rect(s, Inches(0.62), Inches(2.9), Inches(12.1), Inches(3.6), SURF)
+        textbox(s, Inches(0.87), Inches(3.1), Inches(11.6), Inches(3.2),
+                _points_text(interp.get("points"), 3), size=12, color=INK2)
+
+    intl = ANALYSIS.get("international") or {}
+    if intl and intl.get("visible") is not False:
+        s = prs.slides.add_slide(blank)
+        bg(s)
+        slide_header(s, "مقایسهٔ بین‌المللی",
+                     intl.get("title") or "ایران در مقایسه با جهان")
+
+        def _rank_text(rows, unit, top=6):
+            lines = []
+            for r in sorted(rows or [], key=lambda x: -(x.get("value") or 0))[:top]:
+                if not r.get("country"):
+                    continue
+                lines.append("• %s — %s %s"
+                             % (r["country"], fa(r.get("value") or 0, 1), unit))
+            return "\n".join(lines)
+
+        rect(s, Inches(6.95), Inches(1.55), Inches(5.77), Inches(2.6), SURF)
+        textbox(s, Inches(7.2), Inches(1.75), Inches(5.3), Inches(2.2),
+                (intl.get("chart1_title") or "") + "\n"
+                + _rank_text(intl.get("per_capita"), intl.get("chart1_unit") or ""),
+                size=12, color=INK2)
+        rect(s, Inches(0.62), Inches(1.55), Inches(6.05), Inches(2.6), SURF)
+        textbox(s, Inches(0.87), Inches(1.75), Inches(5.6), Inches(2.2),
+                (intl.get("chart2_title") or "") + "\n"
+                + _rank_text(intl.get("subsidy_gdp"), intl.get("chart2_unit") or ""),
+                size=12, color=INK2)
+        rect(s, Inches(0.62), Inches(4.35), Inches(12.1), Inches(2.15), SURF)
+        textbox(s, Inches(0.87), Inches(4.5), Inches(11.6), Inches(1.85),
+                _points_text(intl.get("points"), 3), size=11.5, color=INK2)
+        if intl.get("source_note"):
+            textbox(s, Inches(0.62), Inches(6.6), Inches(12.1), Inches(0.5),
+                    intl["source_note"], size=10, color=MUTED)
+
+    sol = ANALYSIS.get("solutions") or {}
+    if sol and sol.get("visible") is not False:
+        s = prs.slides.add_slide(blank)
+        bg(s)
+        slide_header(s, "مسئله", sol.get("problem_title") or "تعریف مسئله")
+        rect(s, Inches(0.62), Inches(1.55), Inches(12.1), Inches(2.0), SURF)
+        textbox(s, Inches(0.87), Inches(1.8), Inches(11.6), Inches(1.6),
+                sol.get("problem_body") or "", size=13, color=INK2)
+        rect(s, Inches(0.62), Inches(3.75), Inches(12.1), Inches(2.75), SURF)
+        textbox(s, Inches(0.87), Inches(3.95), Inches(11.6), Inches(2.4),
+                (sol.get("conclusion_title") or "نتیجه‌گیری") + "\n"
+                + (sol.get("conclusion_body") or ""), size=13, color=INK)
+
+        items = sol.get("items") or []
+        if items:
+            s = prs.slides.add_slide(blank)
+            bg(s)
+            slide_header(s, "راهکار", sol.get("items_title") or "راهکارهای عملی")
+            # دو ستون، تا پنج راهکار بدون سرریز جا شود
+            half = (len(items) + 1) // 2
+            cols = [items[:half], items[half:]]
+            boxes = [(Inches(6.95), Inches(5.77)), (Inches(0.62), Inches(6.05))]
+            for (x, w), chunk in zip(boxes, cols):
+                if not chunk:
+                    continue
+                rect(s, x, Inches(1.55), w, Inches(4.95), SURF)
+                lines = []
+                for it in chunk:
+                    tags = " · ".join([t for t in (it.get("effort"), it.get("impact")) if t])
+                    head = it.get("title") or ""
+                    if tags:
+                        head += "  (%s)" % tags
+                    lines.append("%s\n%s" % (head, it.get("body") or ""))
+                textbox(s, x + Inches(0.25), Inches(1.75), w - Inches(0.5),
+                        Inches(4.55), "\n\n".join(lines), size=11.5, color=INK2)
+
     s = prs.slides.add_slide(blank)
     bg(s)
     slide_header(s, "پیوست", "روش‌شناسی و محدودیت‌ها")

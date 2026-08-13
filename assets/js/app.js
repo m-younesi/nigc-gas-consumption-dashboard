@@ -26,6 +26,82 @@
   var registry = [];
 
   /** نمودار را می‌سازد، در رجیستری نگه می‌دارد و با تغییر تم دوباره می‌کشد. */
+  /* بخش‌های تحلیلی (تفسیر، مقایسهٔ جهانی، راهکار) فهرست‌های با طول متغیر
+     دارند، پس در HTML ثابت نمی‌شوند و از content.json ساخته می‌شوند. */
+  function renderAnalysis() {
+    var A = (window.NIGC_CONTENT && window.NIGC_CONTENT.analysis) || {};
+
+    function fillNotes(hostId, points) {
+      var host = document.getElementById(hostId);
+      if (!host) return;
+      host.innerHTML = "";
+      (points || []).forEach(function (pt) {
+        if (!pt || (!pt.title && !pt.body)) return;
+        var card = document.createElement("div");
+        card.className = "note reveal";
+        var h = document.createElement("div");
+        h.className = "note__h";
+        h.textContent = pt.title || "";
+        var b = document.createElement("div");
+        b.className = "note__b";
+        b.innerHTML = pt.body || "";
+        card.appendChild(h);
+        card.appendChild(b);
+        host.appendChild(card);
+      });
+    }
+
+    fillNotes("interpretationPoints", (A.interpretation || {}).points);
+    fillNotes("internationalPoints", (A.international || {}).points);
+
+    var host = document.getElementById("solutionItems");
+    if (host) {
+      host.innerHTML = "";
+      ((A.solutions || {}).items || []).forEach(function (it, i) {
+        if (!it || (!it.title && !it.body)) return;
+        var row = document.createElement("div");
+        row.className = "solution reveal";
+
+        var no = document.createElement("div");
+        no.className = "solution__no";
+        no.textContent = U.faNum(i + 1, 0);
+
+        var h = document.createElement("div");
+        h.className = "solution__h";
+        h.textContent = it.title || "";
+
+        var b = document.createElement("div");
+        b.className = "solution__b";
+        b.innerHTML = it.body || "";
+
+        row.appendChild(no);
+        row.appendChild(h);
+        row.appendChild(b);
+
+        var tags = [it.effort, it.impact ? "اثر: " + it.impact : ""]
+          .filter(function (t) { return t; });
+        if (tags.length) {
+          var wrap = document.createElement("div");
+          wrap.className = "solution__tags";
+          tags.forEach(function (t) {
+            var s = document.createElement("span");
+            s.className = "solution__tag";
+            s.textContent = t;
+            wrap.appendChild(s);
+          });
+          row.appendChild(wrap);
+        }
+        host.appendChild(row);
+      });
+    }
+
+    // بخش‌هایی که در پنل خاموش شده‌اند پنهان می‌شوند
+    ["interpretation", "international", "solutions"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el && A[id] && A[id].visible === false) el.style.display = "none";
+    });
+  }
+
   function mount(id, builder, optsFn) {
     var dom = document.getElementById(id);
     if (!dom) return null;
@@ -627,6 +703,19 @@
     mount("cRadar", CHARTS.provinceRadar, function () { return { province: state.explorer }; });
     mount("cProvTiers", CHARTS.provinceTiers, function () { return { province: state.explorer }; });
     mount("cCompare", CHARTS.compareChart, function () { return { provinces: state.compare }; });
+
+    /* --- بخش‌های تحلیلی: محتوایشان از content.json می‌آید --- */
+    renderAnalysis();
+    var intl = (window.NIGC_CONTENT && window.NIGC_CONTENT.analysis
+                && window.NIGC_CONTENT.analysis.international) || {};
+    mount("cBench1", CHARTS.benchmarkChart, function () {
+      return { rows: intl.per_capita || [], unit: intl.chart1_unit || "",
+               highlight: intl.highlight_country, decimals: 0 };
+    });
+    mount("cBench2", CHARTS.benchmarkChart, function () {
+      return { rows: intl.subsidy_gdp || [], unit: intl.chart2_unit || "",
+               highlight: intl.highlight_country, decimals: 1 };
+    });
 
     /* کلیک روی نقشه، کاوشگر را روی همان استان می‌برد */
     if (mapEntry) {

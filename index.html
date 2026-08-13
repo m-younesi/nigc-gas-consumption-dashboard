@@ -12,7 +12,7 @@
 <link rel="icon" href="assets/img/nigc-logo.svg">
 <link rel="preload" href="assets/fonts/Estedad-Bold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/Estedad-Regular.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/app.css?v=4">
+<link rel="stylesheet" href="assets/css/app.css?v=5">
 </head>
 <body>
 <a class="skip" href="#main">پرش به محتوای اصلی</a>
@@ -420,6 +420,75 @@
 </section>
 
 <!-- ==================================================== جدول -->
+<!-- ==================================================== تفسیر -->
+<section class="section section--alt" id="interpretation">
+  <div class="wrap">
+    <div class="sechead reveal">
+      <div class="sechead__no" data-c="analysis.interpretation.number">بخش ۰۹</div>
+      <h2 data-c="analysis.interpretation.title">این ارقام یعنی چه؟</h2>
+      <p data-c="analysis.interpretation.body" data-c-html="1"></p>
+    </div>
+    <div class="grid grid--3" id="interpretationPoints"></div>
+  </div>
+</section>
+
+<!-- ==================================================== مقایسهٔ جهانی -->
+<section class="section" id="international">
+  <div class="wrap">
+    <div class="sechead reveal">
+      <div class="sechead__no" data-c="analysis.international.number">بخش ۱۰</div>
+      <h2 data-c="analysis.international.title">ایران در مقایسه با جهان</h2>
+      <p data-c="analysis.international.body" data-c-html="1"></p>
+    </div>
+    <div class="grid grid--2 reveal">
+      <div class="card">
+        <div class="card__head">
+          <div>
+            <div class="card__title" data-c="analysis.international.chart1_title"></div>
+            <div class="card__sub" data-c="analysis.international.chart1_unit"></div>
+          </div>
+        </div>
+        <div class="chart" id="cBench1"></div>
+      </div>
+      <div class="card">
+        <div class="card__head">
+          <div>
+            <div class="card__title" data-c="analysis.international.chart2_title"></div>
+            <div class="card__sub" data-c="analysis.international.chart2_unit"></div>
+          </div>
+        </div>
+        <div class="chart" id="cBench2"></div>
+      </div>
+    </div>
+    <div class="takeaway" data-c="analysis.international.source_note"></div>
+    <div class="grid grid--3" id="internationalPoints"></div>
+  </div>
+</section>
+
+<!-- ==================================================== مسئله و راهکار -->
+<section class="section section--alt" id="solutions">
+  <div class="wrap">
+    <div class="sechead reveal">
+      <div class="sechead__no" data-c="analysis.solutions.number">بخش ۱۱</div>
+      <h2 data-c="analysis.solutions.title">مسئله چیست، و چه می‌شود کرد؟</h2>
+    </div>
+    <div class="card reveal">
+      <div class="card__head">
+        <div><div class="card__title" data-c="analysis.solutions.problem_title"></div></div>
+      </div>
+      <p class="prose" data-c="analysis.solutions.problem_body" data-c-html="1"></p>
+    </div>
+    <h3 class="sub-h" data-c="analysis.solutions.items_title"></h3>
+    <div id="solutionItems"></div>
+    <div class="card reveal conclusion-card">
+      <div class="card__head">
+        <div><div class="card__title" data-c="analysis.solutions.conclusion_title"></div></div>
+      </div>
+      <p class="prose" data-c="analysis.solutions.conclusion_body" data-c-html="1"></p>
+    </div>
+  </div>
+</section>
+
 <section class="section" id="table">
   <div class="wrap">
     <div class="sechead reveal">
@@ -547,10 +616,10 @@
 </footer>
 
 <script src="assets/vendor/echarts.min.js"></script>
-<script src="assets/js/content.js?v=4"></script>
-<script src="assets/js/data.js?v=4"></script>
-<script src="assets/js/util.js?v=4"></script>
-<script src="assets/js/charts.js?v=4"></script>
-<script src="assets/js/app.js?v=4"></script>
+<script src="assets/js/content.js?v=5"></script>
+<script src="assets/js/data.js?v=5"></script>
+<script src="assets/js/util.js?v=5"></script>
+<script src="assets/js/charts.js?v=5"></script>
+<script src="assets/js/app.js?v=5"></script>
 </body>
 </html>
