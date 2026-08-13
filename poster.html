@@ -6,7 +6,7 @@
 <title>پوستر: آناتومی یک زمستان — مصرف گاز خانگی ایران ۱۴۰۴</title>
 <meta name="description" content="اینفوگرافیک تک‌برگ مصرف گاز خانگی ایران در سال ۱۴۰۴ به تفکیک پلهٔ تعرفه و استان.">
 <link rel="icon" href="assets/img/nigc-logo.svg">
-<link rel="stylesheet" href="assets/css/app.css?v=5">
+<link rel="stylesheet" href="assets/css/app.css?v=6">
 <style>
   /* ---------------- چیدمان پوستر: عرض ثابت تا خروجی PNG قطعی باشد ------- */
   body { background: #05070b; }
@@ -87,6 +87,18 @@
 
   /* ---------------- فهرست رتبه ---------------- */
   .p-list { display: flex; flex-direction: column; gap: 9px; }
+
+  /* بلوک تحلیل: متن پیوسته و فهرست شماره‌دار، فشرده‌تر از سایت */
+  .p-prose { font-size: 14.5px; line-height: 1.9; color: var(--ink-2); margin: 0 0 10px; }
+  .p-card h3.mt { margin-top: 16px; }
+  .p-sol { display: flex; flex-direction: column; gap: 11px; }
+  .p-sol-i { display: grid; grid-template-columns: 26px 1fr; gap: 4px 11px; }
+  .p-sol-i .n { grid-row: 1 / span 2; width: 26px; height: 26px; border-radius: 8px;
+    display: grid; place-items: center; font-size: 12.5px; font-weight: 700;
+    background: var(--surface-3); color: var(--c-gas); }
+  .p-sol-i .h { font-weight: 700; font-size: 14.5px; }
+  .p-sol-i .b { font-size: 13px; line-height: 1.8; color: var(--ink-2); }
+  .h300 { height: 300px; }
   .p-item { display: flex; align-items: center; gap: 12px; font-size: 15px; }
   .p-item .n { width: 26px; height: 26px; flex: none; border-radius: 8px;
     display: grid; place-items: center; font-size: 12.5px; font-weight: 700;
@@ -241,6 +253,35 @@
       </div>
     </div>
 
+    <!-- ==================== تفسیر، مقایسه و راهکار ==================== -->
+    <div class="p-band"><h2 data-c="analysis.solutions.title">مسئله چیست، و چه می‌شود کرد؟</h2></div>
+
+    <div class="p-row r-75">
+      <div class="p-card">
+        <h3 data-c="analysis.solutions.problem_title">تعریف مسئله</h3>
+        <p class="p-prose" data-c="analysis.solutions.problem_body"></p>
+        <h3 class="mt" data-c="analysis.solutions.conclusion_title">نتیجه‌گیری</h3>
+        <p class="p-prose" data-c="analysis.solutions.conclusion_body"></p>
+      </div>
+      <div class="p-card">
+        <h3 data-c="analysis.international.chart1_title">مصرف گاز خانگی به‌ازای هر نفر</h3>
+        <p class="hint" data-c="analysis.international.chart1_unit"></p>
+        <div class="pc h300" id="pBench"></div>
+        <div class="p-note" data-c="analysis.international.source_note"></div>
+      </div>
+    </div>
+
+    <div class="p-row r-2">
+      <div class="p-card">
+        <h3 data-c="analysis.solutions.items_title">راهکارهای عملی</h3>
+        <div class="p-sol" id="pSolutions"></div>
+      </div>
+      <div class="p-card">
+        <h3 data-c="analysis.interpretation.title">این ارقام یعنی چه؟</h3>
+        <div class="p-sol" id="pInterp"></div>
+      </div>
+    </div>
+
     <!-- ============================ پانویس ============================ -->
     <footer class="p-foot">
       <img src="assets/img/nigc-logo.svg" alt="">
@@ -263,11 +304,11 @@
   </div>
 </div>
 
-<script src="assets/js/content.js?v=5"></script>
+<script src="assets/js/content.js?v=6"></script>
 <script src="assets/vendor/echarts.min.js"></script>
-<script src="assets/js/data.js?v=5"></script>
-<script src="assets/js/util.js?v=5"></script>
-<script src="assets/js/charts.js?v=5"></script>
-<script src="assets/js/poster.js?v=5"></script>
+<script src="assets/js/data.js?v=6"></script>
+<script src="assets/js/util.js?v=6"></script>
+<script src="assets/js/charts.js?v=6"></script>
+<script src="assets/js/poster.js?v=6"></script>
 </body>
 </html>

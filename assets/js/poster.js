@@ -196,11 +196,56 @@
       U.faNum(res[res.length - 1].value, 1) + " واحد</b> پایین‌تر.";
   }
 
+  /* بلوک تحلیل: متن‌ها از content.json می‌آیند، پس ممکن است نباشند یا
+     در پنل خاموش شده باشند. پوستر یک برگ است، پس فهرست‌ها را کوتاه
+     می‌کنیم تا صفحه شلوغ نشود. */
+  function buildAnalysis() {
+    var A = (window.NIGC_CONTENT && window.NIGC_CONTENT.analysis) || {};
+
+    function fill(hostId, items, limit) {
+      var host = document.getElementById(hostId);
+      if (!host) return;
+      host.innerHTML = "";
+      (items || []).slice(0, limit).forEach(function (it, i) {
+        if (!it || (!it.title && !it.body)) return;
+        var row = document.createElement("div");
+        row.className = "p-sol-i";
+        var n = document.createElement("div");
+        n.className = "n";
+        n.textContent = U.faNum(i + 1, 0);
+        var h = document.createElement("div");
+        h.className = "h";
+        h.textContent = it.title || "";
+        var b = document.createElement("div");
+        b.className = "b";
+        b.textContent = it.body || "";
+        row.appendChild(n);
+        row.appendChild(h);
+        row.appendChild(b);
+        host.appendChild(row);
+      });
+    }
+
+    fill("pSolutions", (A.solutions || {}).items, 4);
+    fill("pInterp", (A.interpretation || {}).points, 3);
+
+    var intl = A.international || {};
+    var dom = document.getElementById("pBench");
+    if (dom && (intl.per_capita || []).length) {
+      echarts.init(dom, null, { renderer: "canvas" }).setOption(
+        CHARTS.benchmarkChart(dom, {
+          rows: intl.per_capita, unit: intl.chart1_unit || "",
+          highlight: intl.highlight_country, decimals: 0
+        }), true);
+    }
+  }
+
   function init() {
     echarts.registerMap("iran", window.IRAN_GEO);
     buildStats();
     buildWaffles();
     buildGiniList();
+    buildAnalysis();
     buildList("pTopList", D.rankings.over_pattern, function (r) {
       return r.value !== undefined ? r.value : r.h1_over_pattern;
     }, function (v) { return U.faPct(v, 1); }, "var(--c-gas)", 12);
