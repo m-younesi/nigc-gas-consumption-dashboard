@@ -684,6 +684,82 @@ def build_xlsx():
         lc.series.append(ser)
     ws.add_chart(lc, "E2")
 
+    # ---------------------------------------------------- مقایسهٔ جهانی
+    # همان دادهٔ نمودارهای سایت، تا کارپوشه چیزی کمتر از وب‌اپ نداشته باشد
+    ANALYSIS = CONTENT.get("analysis") or {}
+    intl = ANALYSIS.get("international") or {}
+    series = [
+        (intl.get("chart1_title") or "مصرف سرانه", intl.get("chart1_unit") or "",
+         intl.get("per_capita") or []),
+        (intl.get("chart2_title") or "یارانهٔ انرژی", intl.get("chart2_unit") or "",
+         intl.get("subsidy_gdp") or []),
+    ]
+    if any(rows for _, _, rows in series):
+        ws = wb.create_sheet("مقایسهٔ جهانی")
+        ws.sheet_view.rightToLeft = True
+        ws.append(["کشور", "مقدار", "سنجه", "واحد"])
+        for title, unit, rows in series:
+            for r in sorted(rows, key=lambda x: -(x.get("value") or 0)):
+                if not r.get("country"):
+                    continue
+                ws.append([r["country"], r.get("value"), title, unit])
+        style_header(ws)
+        for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
+            row[1].number_format = "0.0"
+            for c in row:
+                c.font = Font(name=FONT, size=10)
+                c.alignment = Alignment(horizontal="center")
+        autosize(ws, min_w=14)
+        if intl.get("source_note"):
+            ws.append([])
+            ws.append([intl["source_note"]])
+            ws.cell(row=ws.max_row, column=1).font = Font(name=FONT, size=9, italic=True)
+
+        bc = BarChart()
+        bc.type = "bar"
+        bc.title = series[0][0]
+        bc.height, bc.width = 10, 16
+        n = len([r for r in series[0][2] if r.get("country")])
+        if n:
+            bc.add_data(Reference(ws, min_col=2, min_row=2, max_row=1 + n),
+                        titles_from_data=False)
+            bc.set_categories(Reference(ws, min_col=1, min_row=2, max_row=1 + n))
+            ws.add_chart(bc, "F2")
+
+    # ---------------------------------------------------- تحلیل و راهکار
+    interp = ANALYSIS.get("interpretation") or {}
+    sol = ANALYSIS.get("solutions") or {}
+    if interp or sol:
+        ws = wb.create_sheet("تحلیل و راهکار")
+        ws.sheet_view.rightToLeft = True
+        ws.append(["بخش", "عنوان", "متن"])
+        style_header(ws)
+
+        def add(section, title, body):
+            if title or body:
+                ws.append([section, title or "", body or ""])
+
+        add("تفسیر", interp.get("title"), interp.get("body"))
+        for pt in (interp.get("points") or []):
+            add("تفسیر — نکته", pt.get("title"), pt.get("body"))
+        add("مسئله", sol.get("problem_title"), sol.get("problem_body"))
+        for it in (sol.get("items") or []):
+            tags = " · ".join([t for t in (it.get("effort"), it.get("impact")) if t])
+            head = it.get("title") or ""
+            if tags:
+                head += "  (%s)" % tags
+            add("راهکار", head, it.get("body"))
+        add("نتیجه‌گیری", sol.get("conclusion_title"), sol.get("conclusion_body"))
+
+        for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
+            for c in row:
+                c.font = Font(name=FONT, size=10)
+                c.alignment = Alignment(horizontal="right", vertical="top",
+                                        wrap_text=True)
+        ws.column_dimensions["A"].width = 16
+        ws.column_dimensions["B"].width = 34
+        ws.column_dimensions["C"].width = 95
+
     OUT.mkdir(parents=True, exist_ok=True)
     dest = OUT / "gas-data-analysis-1404.xlsx"
     wb.save(dest)

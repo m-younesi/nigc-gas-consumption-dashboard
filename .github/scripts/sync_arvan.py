@@ -54,13 +54,21 @@ def content_type(key):
 
 
 def cache_control(key):
-    # HTML و JSON کوتاه کش می‌شوند تا ویرایش‌های پنل مدیریت زود دیده شود؛
-    # فونت و تصویر که عوض نمی‌شوند، طولانی.
+    """
+    مدت کش بر اساس اینکه فایل چقدر عوض می‌شود، نه بر اساس پسوندش.
+
+    فایل‌های downloads/ نامشان ثابت است ولی محتوایشان با هر ویرایش در پنل
+    عوض می‌شود. کش طولانی روی آن‌ها یعنی کاربر تا یک هفته نسخهٔ قدیمی را
+    می‌بیند و فکر می‌کند به‌روزرسانی کار نکرده — همین اتفاق افتاد.
+    """
+    if key.startswith("downloads/"):
+        return "public, max-age=300, must-revalidate"
+
     ext = os.path.splitext(key)[1].lower()
     if ext in (".html", ".json"):
         return "public, max-age=60, must-revalidate"
-    if ext in (".woff2", ".jpg", ".jpeg", ".png", ".svg", ".pdf", ".xlsx",
-               ".pptx", ".csv"):
+    # اینها با ?v= نسخه‌بندی می‌شوند یا اصلاً عوض نمی‌شوند
+    if ext in (".woff2", ".jpg", ".jpeg", ".png", ".svg"):
         return "public, max-age=604800"
     return "public, max-age=3600"
 
