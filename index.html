@@ -12,7 +12,7 @@
 <link rel="icon" href="assets/img/nigc-logo.svg">
 <link rel="preload" href="assets/fonts/Estedad-Bold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/Estedad-Regular.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/app.css?v=7">
+<link rel="stylesheet" href="assets/css/app.css?v=9">
 </head>
 <body>
 <a class="skip" href="#main">پرش به محتوای اصلی</a>
@@ -122,12 +122,16 @@
   <div class="wrap">
     <div class="sechead reveal">
       <div class="sechead__no" data-c="sections.ladder.number">بخش ۰۲</div>
-      <h2 data-c="sections.ladder.title">نردبان دوازده‌پله‌ای، پله به پله</h2>
-      <p data-c="sections.ladder.body" data-c-html="1">
-        در دورهٔ گرم هر مشترک بسته به حجم مصرف در یکی از دوازده پله می‌افتد. این نمودار
-        پروانه‌ای دو سهم را روبه‌روی هم می‌گذارد: چند درصد مشترکین در آن پله‌اند، و آن پله
-        چند درصد گاز کشور را می‌سوزاند.
-      </p>
+      <h2 data-c="sections.ladder.title">نردبان پله‌ها، پله به پله</h2>
+      <p data-c="sections.ladder.body" data-c-html="1">هر مشترک بسته به حجم مصرف در یکی از پله‌های تعرفه می‌افتد — دوازده پله در دورهٔ گرم و چهار پله در دورهٔ سرد. این نمودار پروانه‌ای دو سهم را روبه‌روی هم می‌گذارد: چند درصد مشترکین در آن پله‌اند، و آن پله چند درصد گاز کشور را می‌سوزاند. با کلید بالا می‌توانید دوره را عوض کنید.</p>
+      <div class="sechead__tools">
+        <span class="sechead__tools-label">دوره:</span>
+        <div class="segmented" role="group" aria-label="انتخاب دوره" id="ladderHalf">
+          <button type="button" data-half="h1" aria-pressed="true">دورهٔ گرم (۱۲ پله)</button>
+          <button type="button" data-half="h2" aria-pressed="false">دورهٔ سرد (۴ پله)</button>
+        </div>
+        <span class="sechead__tools-hint">هر سه نمودار این بخش را عوض می‌کند.</span>
+      </div>
     </div>
 
     <div class="grid grid--2 reveal">
@@ -616,10 +620,10 @@
 </footer>
 
 <script src="assets/vendor/echarts.min.js"></script>
-<script src="assets/js/content.js?v=7"></script>
-<script src="assets/js/data.js?v=7"></script>
-<script src="assets/js/util.js?v=7"></script>
-<script src="assets/js/charts.js?v=7"></script>
-<script src="assets/js/app.js?v=7"></script>
+<script src="assets/js/content.js?v=9"></script>
+<script src="assets/js/data.js?v=9"></script>
+<script src="assets/js/util.js?v=9"></script>
+<script src="assets/js/charts.js?v=9"></script>
+<script src="assets/js/app.js?v=9"></script>
 </body>
 </html>

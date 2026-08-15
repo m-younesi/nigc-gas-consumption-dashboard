@@ -14,6 +14,31 @@
   var GROUP_KEYS = ["low", "medium", "high", "very"];
   var GROUP_LABELS = ["کم‌مصرف (الگو)", "مصرف متوسط", "پرمصرف", "بسیار پرمصرف"];
   var TIER_LABELS = ["۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹", "۱۰", "۱۱", "۱۲"];
+  var TIER_LABELS_H2 = ["۱", "۲", "۳", "۴"];
+
+  /* نیمهٔ اول ۱۲ پله دارد و نیمهٔ دوم ۴ پله، و گروه‌بندی‌شان هم یکی نیست:
+     در نیمهٔ اول هر گروه چند پله دارد، در نیمهٔ دوم هر پله خودش یک گروه
+     است. این کمک‌تابع تفاوت را یک‌جا جمع می‌کند تا نمودارها تکرارش نکنند. */
+  function halfSpec(half) {
+    if (half === "h2") {
+      return {
+        half: "h2",
+        tiers: TIER_LABELS_H2,
+        // هر پله یک گروه
+        bounds: { low: [0, 1], medium: [1, 2], high: [2, 3], very: [3, 4] },
+        groupOf: [0, 1, 2, 3],
+        label: "دورهٔ سرد"
+      };
+    }
+    return {
+      half: "h1",
+      tiers: TIER_LABELS,
+      bounds: (D.meta && D.meta.groups_h1) ||
+              { low: [0, 3], medium: [3, 6], high: [6, 10], very: [10, 12] },
+      groupOf: [0, 0, 0, 1, 1, 1, 2, 2, 2, 2, 3, 3],
+      label: "دورهٔ گرم"
+    };
+  }
 
   /** استان را با نام پیدا می‌کند؛ «کل کشور» رکورد ملی است. */
   function rec(name) {
@@ -95,7 +120,8 @@
   function tierButterfly(dom, opts) {
     var p = U.palette();
     var r = rec(opts.province);
-    var counts = r.h1_count, cons = r.h1_cons;
+    var sp = halfSpec(opts.half);
+    var counts = r[sp.half + "_count"], cons = r[sp.half + "_cons"];
     var max = Math.max.apply(null, counts.concat(cons)) * 1.12;
 
     return Object.assign(U.baseOption(), {
@@ -113,10 +139,11 @@
           ps.forEach(function (s) {
             out += "<br>" + s.marker + s.seriesName + ": " + U.faPct(Math.abs(s.value), 1);
           });
-          var i = TIER_LABELS.indexOf(tier);
-          if (i >= 0 && r.h1_intensity[i] != null) {
+          var i = sp.tiers.indexOf(tier);
+          var inten = r[sp.half + "_intensity"];
+          if (i >= 0 && inten && inten[i] != null) {
             out += "<br><span style='opacity:.7'>شدت مصرف: " +
-                   U.faTimes(r.h1_intensity[i]) + " میانگین کشوری</span>";
+                   U.faTimes(inten[i]) + " میانگین کشوری</span>";
           }
           return out;
         }
@@ -128,7 +155,7 @@
         splitLine: { lineStyle: { color: p.grid, type: [4, 4] } }
       }),
       yAxis: U.axis({
-        type: "category", data: TIER_LABELS, inverse: true,
+        type: "category", data: sp.tiers, inverse: true,
         axisLabel: {
           color: p.ink2, fontSize: 12, fontWeight: 600,
           formatter: function (v) { return "پلهٔ " + v; }
@@ -166,8 +193,9 @@
   function intensityChart(dom, opts) {
     var p = U.palette();
     var r = rec(opts.province);
-    var vals = r.h1_intensity;
-    var groupOf = [0, 0, 0, 1, 1, 1, 2, 2, 2, 2, 3, 3];
+    var sp = halfSpec(opts.half);
+    var vals = r[sp.half + "_intensity"];
+    var groupOf = sp.groupOf;
 
     return Object.assign(U.baseOption(), {
       grid: { top: 30, bottom: 34, left: 10, right: 16, containLabel: true },
@@ -181,13 +209,19 @@
         }
       }),
       // مثل جدول‌های مبدأ، پلهٔ ۱ سمت راست می‌نشیند
-      xAxis: U.axis({ type: "category", data: TIER_LABELS, inverse: true,
+      xAxis: U.axis({ type: "category", data: sp.tiers, inverse: true,
         name: "پلهٔ تعرفه", nameLocation: "middle", nameGap: 28,
         axisLabel: { color: p.ink2, fontSize: 12, fontWeight: 600 } }),
+      // وقتی بیشینه کوچک است (دورهٔ سرد حدود ۲×)، گردکردن به عدد صحیح
+      // برچسب‌های تکراری می‌سازد؛ پس یک رقم اعشار می‌دهیم.
       yAxis: U.axis({ type: "value", name: "برابرِ مشترک متوسط",
         nameLocation: "middle", nameGap: 40, nameRotate: 90,
         axisLabel: { color: p.muted, fontSize: 11,
-          formatter: function (v) { return U.faNum(v, 0) + "×"; } } }),
+          formatter: function (v) {
+            var dec = Math.max.apply(null, vals.filter(function (x) {
+              return x != null; })) < 3 ? 1 : 0;
+            return U.faNum(v, dec) + "×";
+          } } }),
       series: [{
         type: "bar", barWidth: "56%",
         data: vals.map(function (v, i) {
@@ -801,13 +835,15 @@
   function treemapChart(dom, opts) {
     var p = U.palette();
     var r = rec(opts.province);
-    var bounds = D.meta.groups_h1;
+    var sp = halfSpec(opts.half);
+    var bounds = sp.bounds;
+    var consArr = r[sp.half + "_cons"];
     var children = GROUP_KEYS.map(function (k, gi) {
       var a = bounds[k][0], b = bounds[k][1];
       var kids = [];
       for (var i = a; i < b; i++) {
         kids.push({
-          name: "پلهٔ " + TIER_LABELS[i], value: r.h1_cons[i],
+          name: "پلهٔ " + sp.tiers[i], value: consArr[i],
           _tier: i, itemStyle: { color: p.groups[gi] }
         });
       }
@@ -818,9 +854,10 @@
       tooltip: Object.assign(U.baseOption().tooltip, {
         formatter: function (o) {
           var extra = "";
-          if (o.data._tier !== undefined && r.h1_intensity[o.data._tier] != null) {
+          var inten = r[sp.half + "_intensity"];
+          if (o.data._tier !== undefined && inten && inten[o.data._tier] != null) {
             extra = "<br><span style='opacity:.72'>شدت: " +
-              U.faTimes(r.h1_intensity[o.data._tier]) + " میانگین</span>";
+              U.faTimes(inten[o.data._tier]) + " میانگین</span>";
           }
           return "<b>" + o.name + "</b><br>سهم از کل مصرف: " + U.faPct(o.value, 1) + extra;
         }

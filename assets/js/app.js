@@ -13,6 +13,7 @@
     glanceHalf: "h1",
     flowHalf: "h1",
     lorenzHalf: "h1",
+    ladderHalf: "h1",
     ladderProv: "کل کشور",
     flowProv: "کل کشور",
     lorenzProv: "مازندران",
@@ -302,18 +303,28 @@
     $("#waffleNote").innerHTML =
       "دو مربع کنار هم را مقایسه کنید: تعداد خانه‌های تیره‌تر در سمت گاز به‌مراتب بیشتر از سمت مشترکین است.";
 
-    var lp = CHARTS.rec(state.ladderProv);
-    var t12 = lp.h1_intensity[11], t1 = lp.h1_intensity[0];
+    var lp = CHARTS.rec(state.ladderProv), lh = state.ladderHalf;
+    // شمار پله‌ها بین دو دوره فرق دارد (۱۲ و ۴)، پس «پلهٔ آخر» را
+    // از خود آرایه می‌گیریم نه با عدد ثابت.
+    var lCount = lp[lh + "_count"], lCons = lp[lh + "_cons"];
+    var lInt = lp[lh + "_intensity"];
+    var last = lCount.length - 1;
+    var lastFa = U.fa(last + 1);
+    var tLast = lInt[last], t1 = lInt[0];
+    var periodFa = lh === "h1" ? "دورهٔ گرم" : "دورهٔ سرد";
+
     $("#butterflyNote").innerHTML =
-      "<b>" + lp.province + "</b>: پلهٔ ۱ با <b>" + U.faPct(lp.h1_count[0], 1) +
-      "</b> از مشترکین، <b>" + U.faPct(lp.h1_cons[0], 1) + "</b> از گاز را می‌برد؛ " +
-      "در مقابل پلهٔ ۱۲ با تنها <b>" + U.faPct(lp.h1_count[11], 1) + "</b> از مشترکین، <b>" +
-      U.faPct(lp.h1_cons[11], 1) + "</b> از گاز را مصرف می‌کند.";
+      "<b>" + lp.province + "</b> — " + periodFa + ": پلهٔ ۱ با <b>" +
+      U.faPct(lCount[0], 1) + "</b> از مشترکین، <b>" + U.faPct(lCons[0], 1) +
+      "</b> از گاز را می‌برد؛ در مقابل پلهٔ " + lastFa + " با تنها <b>" +
+      U.faPct(lCount[last], 1) + "</b> از مشترکین، <b>" +
+      U.faPct(lCons[last], 1) + "</b> از گاز را مصرف می‌کند.";
 
     $("#intensityNote").innerHTML =
-      "شدت مصرف از <b>" + U.faTimes(t1) + "</b> در پلهٔ ۱ تا <b>" + U.faTimes(t12) +
-      "</b> در پلهٔ ۱۲ بالا می‌رود — یعنی یک مشترک پلهٔ ۱۲ به اندازهٔ حدود <b>" +
-      U.fa(Math.round(t12 / t1)) + "</b> مشترک پلهٔ ۱ گاز می‌سوزاند.";
+      "در " + periodFa + " شدت مصرف از <b>" + U.faTimes(t1) +
+      "</b> در پلهٔ ۱ تا <b>" + U.faTimes(tLast) + "</b> در پلهٔ " + lastFa +
+      " بالا می‌رود — یعنی یک مشترک پلهٔ " + lastFa + " به اندازهٔ حدود <b>" +
+      U.fa(Math.round(tLast / t1)) + "</b> مشترک پلهٔ ۱ گاز می‌سوزاند.";
 
     var fr = CHARTS.rec(state.flowProv), fh = state.flowHalf;
     $("#sankeySub").textContent = fr.province + " — " +
@@ -688,9 +699,12 @@
 
     /* --- نمودارها --- */
     mount("cDonut", CHARTS.donutPair, function () { return { half: state.glanceHalf }; });
-    mount("cButterfly", CHARTS.tierButterfly, function () { return { province: state.ladderProv }; });
-    mount("cIntensity", CHARTS.intensityChart, function () { return { province: state.ladderProv }; });
-    mount("cTreemap", CHARTS.treemapChart, function () { return { province: state.ladderProv }; });
+    mount("cButterfly", CHARTS.tierButterfly,
+      function () { return { province: state.ladderProv, half: state.ladderHalf }; });
+    mount("cIntensity", CHARTS.intensityChart,
+      function () { return { province: state.ladderProv, half: state.ladderHalf }; });
+    mount("cTreemap", CHARTS.treemapChart,
+      function () { return { province: state.ladderProv, half: state.ladderHalf }; });
     mount("cSankey", CHARTS.sankeyChart,
       function () { return { province: state.flowProv, half: state.flowHalf }; });
     mount("cLorenz", CHARTS.lorenzChart,
@@ -731,6 +745,11 @@
     /* --- کنترل‌ها --- */
     bindSegmented("glanceHalf", "half", "glanceHalf", function () {
       byId("cDonut").draw(); paintWaffles(); updateNotes();
+    });
+    bindSegmented("ladderHalf", "half", "ladderHalf", function () {
+      byId("cButterfly").draw(); byId("cIntensity").draw(); byId("cTreemap").draw();
+      paintLegends();
+      updateNotes();
     });
     bindSegmented("flowHalf", "half", "flowHalf", function () {
       byId("cSankey").draw(); updateNotes();
