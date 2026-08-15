@@ -90,7 +90,7 @@
   }
 
   /* ======================================================================
-     ۲. پروانه: سهم مشترکین در برابر سهم مصرف، پله به پله (دورهٔ سرد)
+     ۲. پروانه: سهم مشترکین در برابر سهم مصرف، پله به پله (دورهٔ گرم)
      ====================================================================== */
   function tierButterfly(dom, opts) {
     var p = U.palette();
@@ -294,7 +294,7 @@
       hint: "پرمصرف‌ترین یک‌دهم مشترکین چند درصد گاز را می‌برند" },
     climate_residual: { key: "climate_residual", label: "انحراف از انتظار اقلیمی", unit: " واحد", dec: 1,
       diverging: true,
-      hint: "بالاتر از صفر یعنی بیش از آنچه سرمای استان توجیه می‌کند گاز می‌سوزد" }
+      hint: "بالاتر از صفر یعنی بیش از آنچه اقلیم استان توجیه می‌کند گاز می‌سوزد" }
   };
 
   function iranMap(dom, opts) {
@@ -619,11 +619,12 @@
      ====================================================================== */
   function seasonDumbbell(dom, opts) {
     var p = U.palette();
-    function warm(r) { return r.h2_intensity_g.very; }
-    function cold(r) { return r.h1_intensity_g.very; }
+    // h1 نیمهٔ اول است (دورهٔ گرم، ۱۲ پله) و h2 نیمهٔ دوم (دورهٔ سرد، ۴ پله)
+    function coldVal(r) { return r.h2_intensity_g.very; }
+    function warmVal(r) { return r.h1_intensity_g.very; }
 
     var rows = D.provinces.slice().sort(function (a, b) {
-      return (cold(a) - warm(a)) - (cold(b) - warm(b));
+      return (warmVal(a) - coldVal(a)) - (warmVal(b) - coldVal(b));
     });
     var names = rows.map(function (r) { return r.province; });
 
@@ -632,7 +633,7 @@
       legend: {
         top: 2, right: "center", itemWidth: 12, itemHeight: 12, itemGap: 18,
         textStyle: { color: p.ink2, fontSize: 11.5, fontFamily: "Estedad, sans-serif" },
-        data: ["دورهٔ گرم — بالاترین پله", "دورهٔ سرد — بالاترین گروه"]
+        data: ["دورهٔ سرد — بالاترین پله", "دورهٔ گرم — بالاترین گروه"]
       },
       tooltip: Object.assign(U.baseOption().tooltip, {
         trigger: "axis", axisPointer: { type: "shadow" },
@@ -640,10 +641,10 @@
           var r = rec(ps[0].axisValue);
           return "<b>" + r.province + "</b><br>" +
             "شدت مصرف پرمصرف‌ترین گروه:<br>" +
-            "دورهٔ گرم (پلهٔ ۴): <b>" + U.faTimes(warm(r)) + "</b> " +
+            "دورهٔ سرد (پلهٔ ۴): <b>" + U.faTimes(coldVal(r)) + "</b> " +
             "<span style='opacity:.7'>(" + U.faPct(r.h2_count_g.very, 1) + " مشترک → " +
             U.faPct(r.h2_cons_g.very, 1) + " گاز)</span><br>" +
-            "دورهٔ سرد (پله‌های ۱۱ و ۱۲): <b>" + U.faTimes(cold(r)) + "</b> " +
+            "دورهٔ گرم (پله‌های ۱۱ و ۱۲): <b>" + U.faTimes(warmVal(r)) + "</b> " +
             "<span style='opacity:.7'>(" + U.faPct(r.h1_count_g.very, 1) + " مشترک → " +
             U.faPct(r.h1_cons_g.very, 1) + " گاز)</span>";
         }
@@ -661,22 +662,22 @@
           renderItem: function (params, api) {
             var i = params.dataIndex;
             var y = api.coord([0, i])[1];
-            var a = api.coord([warm(rows[i]), i])[0];
-            var b = api.coord([cold(rows[i]), i])[0];
+            var a = api.coord([coldVal(rows[i]), i])[0];
+            var b = api.coord([warmVal(rows[i]), i])[0];
             return { type: "line", shape: { x1: a, y1: y, x2: b, y2: y },
               style: { stroke: p.axis, lineWidth: 2 } };
           },
-          data: rows.map(cold)
+          data: rows.map(warmVal)
         },
         {
-          name: "دورهٔ گرم — بالاترین پله", type: "scatter", symbolSize: 10, z: 3,
+          name: "دورهٔ سرد — بالاترین پله", type: "scatter", symbolSize: 10, z: 3,
           itemStyle: { color: p.subs, borderColor: p.surface, borderWidth: 2 },
-          data: rows.map(function (r, i) { return [warm(r), i]; })
+          data: rows.map(function (r, i) { return [coldVal(r), i]; })
         },
         {
-          name: "دورهٔ سرد — بالاترین گروه", type: "scatter", symbolSize: 10, z: 3,
+          name: "دورهٔ گرم — بالاترین گروه", type: "scatter", symbolSize: 10, z: 3,
           itemStyle: { color: p.gas, borderColor: p.surface, borderWidth: 2 },
-          data: rows.map(function (r, i) { return [cold(r), i]; })
+          data: rows.map(function (r, i) { return [warmVal(r), i]; })
         }
       ]
     });

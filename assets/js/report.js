@@ -73,12 +73,12 @@
       " است و دامنهٔ آن میان استان‌ها " + U.faNum(H.spread_gini, 3) + " واحد اختلاف دارد — " +
       "از " + g[0].province + " تا " + g[g.length - 1].province + ".",
 
-      "<b>سرما همهٔ ماجرا نیست.</b> میانگین دمای استان تنها " +
+      "<b>اقلیم همهٔ ماجرا نیست.</b> میانگین دمای استان تنها " +
       U.faPct(D.climate.over_pattern.r2 * 100, 0) + " از پراکندگی مصرف مازاد بر الگو را " +
       "توضیح می‌دهد. <b>" + res[0].province + "</b> با " + U.faNum(res[0].value, 1) +
       " واحد بالاتر از انتظار اقلیمی‌اش مصرف می‌کند و <b>" +
       res[res.length - 1].province + "</b> با " + U.faNum(res[res.length - 1].value, 1) +
-      " واحد پایین‌تر. استان‌های خزری با وجود زمستان معتدل بالای خط برازش می‌نشینند؛ " +
+      " واحد پایین‌تر. استان‌های خزری با وجود اقلیم معتدل بالای خط برازش می‌نشینند؛ " +
       "نشانه‌ای از نقش رطوبت، کیفیت عایق‌بندی و الگوی سکونت."
     ];
     var ol = document.getElementById("rFindings");
@@ -295,14 +295,14 @@
       U.faPct(c.r2 * 100, 0) + "</b> از پراکندگی را توضیح می‌دهد. " +
       "سه استان <b>" + res[0].province + "</b>، <b>" + res[1].province + "</b> و <b>" +
       res[2].province + "</b> بیشترین انحراف مثبت را دارند — یعنی مصرفشان را نمی‌توان " +
-      "با سرما توجیه کرد.";
+      "با اقلیم توجیه کرد.";
 
     var gaps = D.provinces.map(function (x) {
       return { p: x.province, g: x.h1_intensity_g.very - x.h2_intensity_g.very };
     }).sort(function (a, b) { return b.g - a.g; });
     document.getElementById("rSeasonNote").innerHTML =
-      "در دورهٔ گرم، پرمصرف‌ترین گروه کشور <b>" + U.faTimes(NAT.h2_intensity_g.very) +
-      "</b> مشترک متوسط گاز می‌سوزاند؛ در دورهٔ سرد این فاصله به <b>" +
+      "در دورهٔ سرد، پرمصرف‌ترین گروه کشور <b>" + U.faTimes(NAT.h2_intensity_g.very) +
+      "</b> مشترک متوسط گاز می‌سوزاند؛ در دورهٔ گرم این فاصله به <b>" +
       U.faTimes(NAT.h1_intensity_g.very) + "</b> می‌رسد. بیشترین بازشدن این شکاف در <b>" +
       gaps[0].p + "</b> رخ می‌دهد و کمترینش در <b>" + gaps[gaps.length - 1].p + "</b>.";
 
