@@ -602,12 +602,14 @@
   /* ========================================================== اعتبار تصاویر */
   function buildCredits() {
     var host = $("#credits");
+    if (host) {
     (window.NIGC_CREDITS || []).forEach(function (c) {
       host.appendChild(el("div", { class: "credit", html:
         "<b>" + c.title + "</b>" + (c.author ? c.author + " — " : "") +
         c.license + ' · <a href="' + c.source + '" target="_blank" rel="noopener">ویکی‌مدیا کامنز</a>'
       }));
     });
+    }
     $("#footNote").textContent = "ساخته‌شده با داده‌های عمومی · " +
       U.fa(new Date().getFullYear());
   }
