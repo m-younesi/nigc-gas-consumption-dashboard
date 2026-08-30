@@ -153,7 +153,7 @@ a { color: inherit; }
 
 /* بدون justify-content: وقتی فهرست سرریز می‌کند باید از «یک نگاه» شروع شود،
    نه از آخرین آیتم. margin خودش در حالت جادار راست‌چین‌اش می‌کند. */
-.navlinks { display: flex; gap: .15rem; margin-inline-start: auto; overflow-x: auto;
+.navlinks { display: flex; gap: .15rem; margin-inline-start: auto; overflow: visible;
   flex: 1 1 auto; min-width: 0; scrollbar-width: none; }
 .navlinks::-webkit-scrollbar { display: none; }
 .navlinks a {
@@ -163,6 +163,33 @@ a { color: inherit; }
 }
 .navlinks a:hover { background: var(--surface-2); color: var(--ink); }
 .navlinks a.is-active { background: var(--surface-3); color: var(--ink); font-weight: 600; }
+
+/* --- تب بخش‌ها (گروه‌بندی نوار ابزار) --- */
+.navgroup { position: relative; display: inline-block; }
+.navgroup__btn {
+  padding: .38rem .8rem; border-radius: 999px; font-size: .83rem; font-weight: 600;
+  color: var(--ink); background: var(--surface-2); border: 0; cursor: pointer;
+  display: inline-flex; align-items: center; gap: .25rem; white-space: nowrap;
+  font-family: inherit; transition: background .18s var(--ease), color .18s var(--ease);
+}
+.navgroup__btn:hover { background: var(--surface-3); }
+.navgroup__caret { font-size: .7em; opacity: .7; }
+.navgroup__panel {
+  position: absolute; top: calc(100% + .4rem); inset-inline-end: 0;
+  min-width: 240px; max-height: 72vh; overflow-y: auto;
+  display: none; flex-direction: column; gap: .08rem; padding: .4rem;
+  background: var(--surface-1); border: 1px solid var(--border); border-radius: 14px;
+  box-shadow: 0 18px 40px rgba(0,0,0,.35); z-index: 60;
+}
+.navgroup:hover .navgroup__panel,
+.navgroup.is-open .navgroup__panel { display: flex; }
+.navgroup__panel a {
+  padding: .5rem .6rem; border-radius: 9px; color: var(--ink-2);
+  text-decoration: none; white-space: nowrap; font-size: .85rem;
+  transition: background .15s var(--ease), color .15s var(--ease);
+}
+.navgroup__panel a:hover { background: var(--surface-3); color: var(--ink); }
+.navgroup__panel a.is-active { background: var(--surface-2); color: var(--ink); font-weight: 600; }
 
 /* --- نوار بالا در عرض کم ---
    فهرست یازده بخش دارد، پس برند باید زودتر جا خالی کند. به‌جای بریدن متن

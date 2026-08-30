@@ -98,64 +98,27 @@
   "bg_image": "assets/img/onshore.jpg",
   "bg_alt": "تأسیسات خشکی مجتمع گازی پارس جنوبی در شب"
  },
- "nav": [
-  {
-   "id": "glance",
-   "label": "یک نگاه"
-  },
-  {
-   "id": "ladder",
-   "label": "نردبان پله‌ها"
-  },
-  {
-   "id": "flow",
-   "label": "جریان مصرف"
-  },
-  {
-   "id": "inequality",
-   "label": "نابرابری"
-  },
-  {
-   "id": "map",
-   "label": "نقشهٔ کشور"
-  },
-  {
-   "id": "matrix",
-   "label": "ماتریس استان‌ها"
-  },
-  {
-   "id": "climate",
-   "label": "اقلیم و رفتار"
-  },
-  {
-   "id": "season",
-   "label": "دو فصل"
-  },
-  {
-   "id": "explorer",
-   "label": "کاوشگر استان"
-  },
-  {
-   "id": "interpretation",
-   "label": "تفسیر"
-  },
-  {
-   "id": "international",
-   "label": "مقایسهٔ جهانی"
-  },
-  {
-   "id": "solutions",
-   "label": "راهکار"
-  },
-  {
-   "id": "table",
-   "label": "داده‌ها"
-  },
-  {
-   "id": "downloads",
-   "label": "دانلود"
-  }
- ],
+  "nav": [
+   {
+    "label": "بخش خانگی",
+    "children": [
+     { "id": "glance", "label": "یک نگاه" },
+     { "id": "ladder", "label": "نردبان پله‌ها" },
+     { "id": "flow", "label": "جریان مصرف" },
+     { "id": "inequality", "label": "نابرابری" },
+     { "id": "map", "label": "نقشهٔ کشور" },
+     { "id": "matrix", "label": "ماتریس استان‌ها" },
+     { "id": "climate", "label": "اقلیم و رفتار" },
+     { "id": "season", "label": "دو فصل" },
+     { "id": "explorer", "label": "کاوشگر استان" },
+     { "id": "interpretation", "label": "تفسیر" },
+     { "id": "international", "label": "مقایسهٔ جهانی" },
+     { "id": "solutions", "label": "راهکار" },
+     { "id": "table", "label": "داده‌ها" },
+     { "id": "downloads", "label": "دانلود" }
+    ]
+   }
+  ],
  "sections": {
   "glance": {
    "visible": true,
@@ -239,12 +202,68 @@
    "body": "روی سرستون‌ها بزنید تا مرتب شود. جست‌وجو نام استان را فیلتر می‌کند.",
    "footnote": "همهٔ ستون‌ها درصدند مگر جینی و پلهٔ میانه. «مازاد بر الگو» یعنی سهم گازی که بالاتر از پلهٔ ۳ سوخته است."
   },
-  "downloads": {
-   "visible": true,
-   "number": "بخش ۱۱",
-   "title": "دریافت نسخه‌های دیگر",
-   "body": "همین تحلیل در قالب‌های آمادهٔ ارائه، چاپ و کار با داده."
-  },
+   "downloads": {
+    "visible": true,
+    "number": "بخش ۱۱",
+    "title": "دریافت نسخه‌های دیگر",
+    "body": "همین تحلیل در قالب‌های آمادهٔ ارائه، چاپ و کار با داده.",
+    "downloads": [
+      {
+        "file": "downloads/gas-report-1404.pdf",
+        "download_name": "گزارش-تحلیلی-مصرف-گاز-خانگی-۱۴۰۴.pdf",
+        "title": "گزارش کامل PDF",
+        "size": "۱۱ صفحه · ۱٫۱ مگابایت",
+        "description": "روایت تحلیلی همراه با همهٔ نمودارها و جدول‌های پیوست، آمادهٔ چاپ.",
+        "icon": "pdf",
+        "tone": "var(--critical)"
+      },
+      {
+        "file": "downloads/gas-presentation-1404.pptx",
+        "download_name": "ارائه-مصرف-گاز-خانگی-۱۴۰۴.pptx",
+        "title": "ارائهٔ پاورپوینت",
+        "size": "۱۲ اسلاید · ۱٫۲ مگابایت",
+        "description": "اسلایدهای جلسه با نمودارهای رندرشده و نکتهٔ کلیدی هر بخش.",
+        "icon": "ppt",
+        "tone": "var(--serious)"
+      },
+      {
+        "file": "downloads/gas-data-analysis-1404.xlsx",
+        "download_name": "داده-و-تحلیل-مصرف-گاز-خانگی-۱۴۰۴.xlsx",
+        "title": "کارپوشهٔ اکسل",
+        "size": "۷ برگه · ۲۹ کیلوبایت",
+        "description": "جدول‌های خام و شاخص‌های محاسبه‌شده، با نمودار و قالب‌بندی شرطی.",
+        "icon": "xls",
+        "tone": "var(--ok)"
+      },
+      {
+        "file": "downloads/gas-infographic-1404.png",
+        "download_name": "اینفوگرافیک-مصرف-گاز-خانگی-۱۴۰۴.png",
+        "title": "پوستر اینفوگرافیک",
+        "size": "۳۵۸۴ پیکسل · ۵٫۴ مگابایت",
+        "description": "نسخهٔ تصویری تک‌برگ، با کیفیت چاپ.",
+        "icon": "img",
+        "tone": "var(--c-gas)"
+      },
+      {
+        "file": "poster.html",
+        "download_name": "",
+        "title": "اینفوگرافیک تعاملی",
+        "size": "در مرورگر",
+        "description": "همان پوستر، بدون دانلود.",
+        "icon": "img",
+        "tone": "var(--g3)"
+      },
+      {
+        "file": "downloads/gas-raw-data-1404.csv",
+        "download_name": "داده-خام-مصرف-گاز-خانگی-۱۴۰۴.csv",
+        "title": "دادهٔ خام CSV",
+        "size": "۳۲ ردیف · ۴۲ ستون",
+        "description": "همهٔ پله‌ها و شاخص‌ها، برای تحلیل مجدد در هر ابزاری.",
+        "icon": "csv",
+        "tone": "var(--c-subs)"
+      }
+    ]
+   },
   "method": {
    "visible": true,
    "number": "بخش ۱۲",
@@ -253,62 +272,7 @@
    "col2_html": "<h3>ساخت این صفحه</h3><ul><li>نمودارها با <b>ECharts</b> رندر می‌شوند و کتابخانه به‌صورت محلی در همین مخزن قرار دارد (بدون وابستگی به CDN).</li><li>پالت رنگ با آزمون‌های کوررنگی (پروتان/دوتان)، کف کنتراست و باند روشنایی در هر دو حالت روشن و تیره اعتبارسنجی شده است. قرارداد ثابت: <b>آبی = مشترکین</b>، <b>نارنجی = مصرف گاز</b>.</li><li>مرزهای نقشه از <b>OpenStreetMap</b> گرفته و برای وب ساده‌سازی شده است.</li><li>قلم <b>استعداد</b> با مجوز SIL OFL.</li></ul><h3>اعتبار تصاویر</h3>"
   }
  },
- "downloads": [
-  {
-   "file": "downloads/gas-report-1404.pdf",
-   "download_name": "گزارش-تحلیلی-مصرف-گاز-خانگی-۱۴۰۴.pdf",
-   "title": "گزارش کامل PDF",
-   "size": "۱۱ صفحه · ۱٫۱ مگابایت",
-   "description": "روایت تحلیلی همراه با همهٔ نمودارها و جدول‌های پیوست، آمادهٔ چاپ.",
-   "icon": "pdf",
-   "tone": "var(--critical)"
-  },
-  {
-   "file": "downloads/gas-presentation-1404.pptx",
-   "download_name": "ارائه-مصرف-گاز-خانگی-۱۴۰۴.pptx",
-   "title": "ارائهٔ پاورپوینت",
-   "size": "۱۲ اسلاید · ۱٫۲ مگابایت",
-   "description": "اسلایدهای جلسه با نمودارهای رندرشده و نکتهٔ کلیدی هر بخش.",
-   "icon": "ppt",
-   "tone": "var(--serious)"
-  },
-  {
-   "file": "downloads/gas-data-analysis-1404.xlsx",
-   "download_name": "داده-و-تحلیل-مصرف-گاز-خانگی-۱۴۰۴.xlsx",
-   "title": "کارپوشهٔ اکسل",
-   "size": "۷ برگه · ۲۹ کیلوبایت",
-   "description": "جدول‌های خام و شاخص‌های محاسبه‌شده، با نمودار و قالب‌بندی شرطی.",
-   "icon": "xls",
-   "tone": "var(--ok)"
-  },
-  {
-   "file": "downloads/gas-infographic-1404.png",
-   "download_name": "اینفوگرافیک-مصرف-گاز-خانگی-۱۴۰۴.png",
-   "title": "پوستر اینفوگرافیک",
-   "size": "۳۵۸۴ پیکسل · ۵٫۴ مگابایت",
-   "description": "نسخهٔ تصویری تک‌برگ، با کیفیت چاپ.",
-   "icon": "img",
-   "tone": "var(--c-gas)"
-  },
-  {
-   "file": "poster.html",
-   "download_name": "",
-   "title": "اینفوگرافیک تعاملی",
-   "size": "در مرورگر",
-   "description": "همان پوستر، بدون دانلود.",
-   "icon": "img",
-   "tone": "var(--g3)"
-  },
-  {
-   "file": "downloads/gas-raw-data-1404.csv",
-   "download_name": "داده-خام-مصرف-گاز-خانگی-۱۴۰۴.csv",
-   "title": "دادهٔ خام CSV",
-   "size": "۳۲ ردیف · ۴۲ ستون",
-   "description": "همهٔ پله‌ها و شاخص‌ها، برای تحلیل مجدد در هر ابزاری.",
-   "icon": "csv",
-   "tone": "var(--c-subs)"
-  }
- ],
+
  "table_columns": [
   {
    "key": "province",

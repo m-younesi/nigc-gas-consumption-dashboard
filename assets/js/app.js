@@ -575,8 +575,10 @@
       d: "همهٔ پله‌ها و شاخص‌ها، برای تحلیل مجدد در هر ابزاری.", i: "csv",
       tone: "var(--c-subs)" }
   ];
-  var DOWNLOADS = (CONTENT.downloads || []).length
-    ? CONTENT.downloads.map(function (d) {
+  /* دانلودها مختص هر بخش‌اند: ابتدا لیستِ زیر بخشِ مربوطه، وگرنه پیش‌فرض */
+  var secDl = CONTENT.sections && CONTENT.sections.downloads && CONTENT.sections.downloads.downloads;
+  var DOWNLOADS = (secDl && secDl.length)
+    ? secDl.map(function (d) {
         return { f: d.file, as: d.download_name, t: d.title, size: d.size, d: d.description, i: d.icon, tone: d.tone };
       })
     : DEFAULT_DOWNLOADS;

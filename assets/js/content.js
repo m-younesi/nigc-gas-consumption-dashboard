@@ -59,13 +59,59 @@
     var nav = document.getElementById("nav");
     if (!nav || !content.nav) return;
     nav.innerHTML = "";
-    content.nav.forEach(function (item) {
-      var section = content.sections && content.sections[item.id];
-      if (section && section.visible === false) return;
-      var a = document.createElement("a");
-      a.setAttribute("href", "#" + item.id);
-      a.textContent = item.label;
-      nav.appendChild(a);
+    content.nav.forEach(function (group) {
+      if (group.children) {
+        /* یک «بخش» = گروهی با زیرآیتم؛ به‌صورت تب با پنل کشویی نمایش داده می‌شود */
+        var wrap = document.createElement("div");
+        wrap.className = "navgroup";
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "navgroup__btn";
+        btn.setAttribute("aria-haspopup", "true");
+        btn.setAttribute("aria-expanded", "false");
+        btn.innerHTML = group.label + ' <span class="navgroup__caret" aria-hidden="true">▾</span>';
+        var panel = document.createElement("div");
+        panel.className = "navgroup__panel";
+        group.children.forEach(function (item) {
+          var section = content.sections && content.sections[item.id];
+          if (section && section.visible === false) return;
+          var a = document.createElement("a");
+          a.setAttribute("href", "#" + item.id);
+          a.textContent = item.label;
+          a.addEventListener("click", function () { closeGroup(wrap, btn); });
+          panel.appendChild(a);
+        });
+        btn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          var open = wrap.classList.toggle("is-open");
+          btn.setAttribute("aria-expanded", open ? "true" : "false");
+        });
+        wrap.appendChild(btn);
+        wrap.appendChild(panel);
+        nav.appendChild(wrap);
+      } else if (group.id) {
+        /* آیتم تخت (سازگاری با ساختار قبلی) */
+        var section = content.sections && content.sections[group.id];
+        if (section && section.visible === false) return;
+        var a = document.createElement("a");
+        a.setAttribute("href", "#" + group.id);
+        a.textContent = group.label;
+        nav.appendChild(a);
+      }
+    });
+    function closeGroup(wrap, btn) {
+      wrap.classList.remove("is-open");
+      btn.setAttribute("aria-expanded", "false");
+    }
+    document.addEventListener("click", function (e) {
+      var groups = nav.querySelectorAll(".navgroup.is-open");
+      groups.forEach(function (g) {
+        if (!g.contains(e.target)) {
+          g.classList.remove("is-open");
+          var b = g.querySelector(".navgroup__btn");
+          if (b) b.setAttribute("aria-expanded", "false");
+        }
+      });
     });
   }
 
